@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Protocole d'Expérimentation - eTCC</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
       --bg-color: #FFFFFF;
@@ -64,8 +63,30 @@
     .form-label {
       display: block;
       font-weight: 600;
-      margin-top: 20px;
+      margin-top: 15px;
       margin-bottom: 8px;
+    }
+
+    /* --- NOUVEAU STYLE POUR LA GESTION DES ERREURS BLOCS --- */
+    .question-block {
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+
+    .question-block.has-error {
+      background-color: #FEF2F2 !important;
+      border-color: #EF4444 !important;
+    }
+
+    .error-text {
+      color: #EF4444;
+      font-size: 0.9em;
+      font-weight: bold;
+      margin-top: 8px;
+      display: none;
     }
 
     input[type="text"], select, textarea {
@@ -89,7 +110,6 @@
       flex-direction: column;
       gap: 8px;
       margin-top: 8px;
-      margin-bottom: 20px;
     }
 
     .radio-option {
@@ -140,12 +160,6 @@
       margin-bottom: 20px;
     }
 
-    #qrcode {
-      display: flex;
-      justify-content: center;
-      margin: 20px auto;
-    }
-
     .page { display: none; }
     .page.active { display: block; }
   </style>
@@ -156,62 +170,80 @@
 
     <div id="page-1" class="page active">
       <h1>Profil & Humeur (1/2)</h1>
-      <p class="instruction">Ce premier questionnaire a pour objectif de recueillir, dans un premier temps, quelques informations générales vous concernant, puis d’évaluer votre humeur actuelle. Il vous prendra moins de cinq minutes.</p>
+      <p class="instruction">Ce premier questionnaire a pour objectif de recueillir quelques informations générales vous concernant, puis d’évaluer votre humeur actuelle.</p>
       
       <div class="card">
         <h2>Informations générales</h2>
         
-        <label class="form-label" for="id_participant">Code de participation :</label>
-        <input type="text" id="id_participant" placeholder="Ex: S01" onchange="sauvegarderEtat()">
+        <div id="block_id_participant" class="question-block">
+          <label class="form-label" for="id_participant">Code de participation : *</label>
+          <input type="text" id="id_participant" placeholder="Ex: S01" onchange="sauvegarderEtat(); gererErreur('block_id_participant', false)">
+          <div class="error-text">⚠️ Veuillez renseigner le code de participation.</div>
+        </div>
 
-        <label class="form-label" for="age">1. Dans quelle tranche d’âge vous situez-vous ? *</label>
-        <select id="age" onchange="sauvegarderEtat()">
-          <option value="">-- Sélectionner --</option>
-          <option value="Moins de 18 ans">Moins de 18 ans</option>
-          <option value="18 à 24 ans">18 à 24 ans</option>
-          <option value="25 à 34 ans">25 à 34 ans</option>
-          <option value="35 à 44 ans">35 à 44 ans</option>
-          <option value="45 à 54 ans">45 à 54 ans</option>
-          <option value="55 à 64 ans">55 à 64 ans</option>
-          <option value="65 ans et plus">65 ans et plus</option>
-        </select>
+        <div id="block_age" class="question-block">
+          <label class="form-label" for="age">1. Dans quelle tranche d’âge vous situez-vous ? *</label>
+          <select id="age" onchange="sauvegarderEtat(); gererErreur('block_age', false)">
+            <option value="">-- Sélectionner --</option>
+            <option value="Moins de 18 ans">Moins de 18 ans</option>
+            <option value="18 à 24 ans">18 à 24 ans</option>
+            <option value="25 à 34 ans">25 à 34 ans</option>
+            <option value="35 à 44 ans">35 à 44 ans</option>
+            <option value="45 à 54 ans">45 à 54 ans</option>
+            <option value="55 à 64 ans">55 à 64 ans</option>
+            <option value="65 ans et plus">65 ans et plus</option>
+          </select>
+          <div class="error-text">⚠️ Veuillez sélectionner votre tranche d'âge.</div>
+        </div>
 
-        <label class="form-label" for="genre">2. Quel est votre genre ? *</label>
-        <select id="genre" onchange="sauvegarderEtat()">
-          <option value="">-- Sélectionner --</option>
-          <option value="Homme">Homme</option>
-          <option value="Femme">Femme</option>
-          <option value="Autre">Autre</option>
-        </select>
+        <div id="block_genre" class="question-block">
+          <label class="form-label" for="genre">2. Quel est votre genre ? *</label>
+          <select id="genre" onchange="sauvegarderEtat(); gererErreur('block_genre', false)">
+            <option value="">-- Sélectionner --</option>
+            <option value="Homme">Homme</option>
+            <option value="Femme">Femme</option>
+            <option value="Autre">Autre</option>
+          </select>
+          <div class="error-text">⚠️ Veuillez sélectionner votre genre.</div>
+        </div>
 
-        <label class="form-label" for="etudes">3. Quel est votre niveau d’études le plus élevé ? *</label>
-        <select id="etudes" onchange="sauvegarderEtat()">
-          <option value="">-- Sélectionner --</option>
-          <option value="Aucun diplôme">Aucun diplôme</option>
-          <option value="Brevet ou équivalent">Brevet ou équivalent</option>
-          <option value="Baccalauréat">Baccalauréat</option>
-          <option value="Bac à Bac +3">Bac à Bac +3</option>
-          <option value="Supérieur à Bac +3">Supérieur à Bac +3</option>
-        </select>
+        <div id="block_etudes" class="question-block">
+          <label class="form-label" for="etudes">3. Quel est votre niveau d’études le plus élevé ? *</label>
+          <select id="etudes" onchange="sauvegarderEtat(); gererErreur('block_etudes', false)">
+            <option value="">-- Sélectionner --</option>
+            <option value="Aucun diplôme">Aucun diplôme</option>
+            <option value="Brevet ou équivalent">Brevet ou équivalent</option>
+            <option value="Baccalauréat">Baccalauréat</option>
+            <option value="Bac à Bac +3">Bac à Bac +3</option>
+            <option value="Supérieur à Bac +3">Supérieur à Bac +3</option>
+          </select>
+          <div class="error-text">⚠️ Veuillez sélectionner votre niveau d'études.</div>
+        </div>
 
-        <label class="form-label" for="csp">4. À quelle catégorie socioprofessionnelle appartenez-vous ? *</label>
-        <select id="csp" onchange="sauvegarderEtat()">
-          <option value="">-- Sélectionner --</option>
-          <option value="Étudiant">Étudiant</option>
-          <option value="Agriculteur exploitant">Agriculteur exploitant</option>
-          <option value="Artisan, commerçant ou chef d'entreprise">Artisan, commerçant ou chef d'entreprise</option>
-          <option value="Cadre et profession intellectuelle supérieure">Cadre et profession intellectuelle supérieure</option>
-          <option value="Employé">Employé</option>
-          <option value="Ouvrier">Ouvrier</option>
-          <option value="Retraité">Retraité</option>
-          <option value="Autre personne sans activité professionnelle">Autre personne sans activité professionnelle</option>
-        </select>
+        <div id="block_csp" class="question-block">
+          <label class="form-label" for="csp">4. À quelle catégorie socioprofessionnelle appartenez-vous ? *</label>
+          <select id="csp" onchange="sauvegarderEtat(); gererErreur('block_csp', false)">
+            <option value="">-- Sélectionner --</option>
+            <option value="Étudiant">Étudiant</option>
+            <option value="Agriculteur exploitant">Agriculteur exploitant</option>
+            <option value="Artisan, commerçant ou chef d'entreprise">Artisan, commerçant ou chef d'entreprise</option>
+            <option value="Cadre et profession intellectuelle supérieure">Cadre et profession intellectuelle supérieure</option>
+            <option value="Employé">Employé</option>
+            <option value="Ouvrier">Ouvrier</option>
+            <option value="Retraité">Retraité</option>
+            <option value="Autre personne sans activité professionnelle">Autre personne sans activité professionnelle</option>
+          </select>
+          <div class="error-text">⚠️ Veuillez sélectionner votre CSP.</div>
+        </div>
 
-        <label class="form-label">5. Êtes-vous familier avec l’utilisation des nouvelles technologies ? *</label>
-        <div class="radio-group">
-          <label class="radio-option"><input type="radio" name="tech_fam" value="Oui, très familier" onchange="sauvegarderEtat()"> Oui, très familier</label>
-          <label class="radio-option"><input type="radio" name="tech_fam" value="Moyennement familier" onchange="sauvegarderEtat()"> Moyennement familier</label>
-          <label class="radio-option"><input type="radio" name="tech_fam" value="Pas du tout familier" onchange="sauvegarderEtat()"> Pas du tout familier</label>
+        <div id="block_tech_fam" class="question-block">
+          <label class="form-label">5. Êtes-vous familier avec l’utilisation des nouvelles technologies ? *</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="tech_fam" value="Oui, très familier" onchange="sauvegarderEtat(); gererErreur('block_tech_fam', false)"> Oui, très familier</label>
+            <label class="radio-option"><input type="radio" name="tech_fam" value="Moyennement familier" onchange="sauvegarderEtat(); gererErreur('block_tech_fam', false)"> Moyennement familier</label>
+            <label class="radio-option"><input type="radio" name="tech_fam" value="Pas du tout familier" onchange="sauvegarderEtat(); gererErreur('block_tech_fam', false)"> Pas du tout familier</label>
+          </div>
+          <div class="error-text">⚠️ Veuillez évaluer votre niveau de familiarité technologique.</div>
         </div>
       </div>
 
@@ -226,35 +258,43 @@
 
     <div id="page-2" class="page">
       <h1>Vos Préférences (2/2)</h1>
+      <p class="instruction">Pour chaque affirmation, veuillez évaluer à quel point elle vous décrit.</p>
       
       <div class="card">
-        <h2>Vos motivations</h2>
-        <p class="instruction">Pour chaque affirmation, veuillez évaluer à quel point chaque affirmation vous décrit.</p>
+        <h2>Description personnelle</h2>
         <div id="hexad-container"></div>
       </div>
 
       <div class="card">
-        <h2>Vos habitudes de jeu</h2>
+        <h2>Habitudes de jeu</h2>
         
-        <label class="form-label">À quelle fréquence jouez-vous à des jeux vidéo (sur smartphone, console, ordinateur) ? *</label>
-        <div class="radio-group">
-          <label class="radio-option"><input type="radio" name="game_freq" value="Jamais" onchange="sauvegarderEtat()"> Jamais</label>
-          <label class="radio-option"><input type="radio" name="game_freq" value="Rarement" onchange="sauvegarderEtat()"> Rarement</label>
-          <label class="radio-option"><input type="radio" name="game_freq" value="Parfois" onchange="sauvegarderEtat()"> Parfois</label>
-          <label class="radio-option"><input type="radio" name="game_freq" value="Souvent" onchange="sauvegarderEtat()"> Souvent</label>
-          <label class="radio-option"><input type="radio" name="game_freq" value="Tous les jours" onchange="sauvegarderEtat()"> Tous les jours</label>
+        <div id="block_game_freq" class="question-block">
+          <label class="form-label">À quelle fréquence jouez-vous à des jeux vidéo (sur smartphone, console, ordinateur) ? *</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="game_freq" value="Jamais" onchange="sauvegarderEtat(); gererErreur('block_game_freq', false)"> Jamais</label>
+            <label class="radio-option"><input type="radio" name="game_freq" value="Rarement" onchange="sauvegarderEtat(); gererErreur('block_game_freq', false)"> Rarement</label>
+            <label class="radio-option"><input type="radio" name="game_freq" value="Parfois" onchange="sauvegarderEtat(); gererErreur('block_game_freq', false)"> Parfois</label>
+            <label class="radio-option"><input type="radio" name="game_freq" value="Souvent" onchange="sauvegarderEtat(); gererErreur('block_game_freq', false)"> Souvent</label>
+            <label class="radio-option"><input type="radio" name="game_freq" value="Tous les jours" onchange="sauvegarderEtat(); gererErreur('block_game_freq', false)"> Tous les jours</label>
+          </div>
+          <div class="error-text">⚠️ Veuillez renseigner votre fréquence de jeu.</div>
         </div>
 
-        <label class="form-label" for="game_examples">Pouvez-vous donner quelques exemples de jeux auxquels vous jouez ?</label>
-        <textarea id="game_examples" rows="3" placeholder="Ex: Candy Crush, Tetris, Zelda..." onchange="sauvegarderEtat()"></textarea>
+        <div class="question-block">
+          <label class="form-label" for="game_examples">Pouvez-vous donner quelques exemples de jeux auxquels vous jouez ?</label>
+          <textarea id="game_examples" rows="3" placeholder="Ex: Candy Crush, Tetris, Zelda..." onchange="sauvegarderEtat()"></textarea>
+        </div>
 
-        <label class="form-label">Je suis très à l'aise et habitué(e) avec les systèmes de points, de niveaux ou de défis dans les applications. *</label>
-        <div class="radio-group">
-          <label class="radio-option"><input type="radio" name="game_points" value="1" onchange="sauvegarderEtat()"> Pas du tout d'accord</label>
-          <label class="radio-option"><input type="radio" name="game_points" value="2" onchange="sauvegarderEtat()"> Plutôt pas d'accord</label>
-          <label class="radio-option"><input type="radio" name="game_points" value="3" onchange="sauvegarderEtat()"> Neutre</label>
-          <label class="radio-option"><input type="radio" name="game_points" value="4" onchange="sauvegarderEtat()"> Plutôt d'accord</label>
-          <label class="radio-option"><input type="radio" name="game_points" value="5" onchange="sauvegarderEtat()"> Tout à fait d'accord</label>
+        <div id="block_game_points" class="question-block">
+          <label class="form-label">Je suis très à l'aise et habitué(e) avec les systèmes de points, de niveaux ou de défis dans les applications. *</label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="game_points" value="1" onchange="sauvegarderEtat(); gererErreur('block_game_points', false)"> Pas du tout d'accord</label>
+            <label class="radio-option"><input type="radio" name="game_points" value="2" onchange="sauvegarderEtat(); gererErreur('block_game_points', false)"> Plutôt pas d'accord</label>
+            <label class="radio-option"><input type="radio" name="game_points" value="3" onchange="sauvegarderEtat(); gererErreur('block_game_points', false)"> Neutre</label>
+            <label class="radio-option"><input type="radio" name="game_points" value="4" onchange="sauvegarderEtat(); gererErreur('block_game_points', false)"> Plutôt d'accord</label>
+            <label class="radio-option"><input type="radio" name="game_points" value="5" onchange="sauvegarderEtat(); gererErreur('block_game_points', false)"> Tout à fait d'accord</label>
+          </div>
+          <div class="error-text">⚠️ Veuillez évaluer cette affirmation.</div>
         </div>
       </div>
 
@@ -266,12 +306,12 @@
 
       <div class="card">
         <h2 id="scenario-title">Chargement du scénario...</h2>
-        <p class="instruction">Vous pouvez étudier l'interface via la maquette Figma interactive ci-dessous (L'ouverture est optionnelle).</p>
+        <p class="instruction">Vous pouvez étudier l'interface via la maquette Figma interactive ci-dessous.</p>
         <a id="link-figma" href="#" target="_blank" class="btn">Consulter la maquette sur Figma</a>
       </div>
 
       <div class="card">
-        <h2>Votre avis</h2>
+        <h2>Intention d'utilisation & Utilité</h2>
         <p class="instruction">Veuillez évaluer votre accord avec les affirmations suivantes concernant cette interface :</p>
         <div id="tam-container"></div>
         <button type="button" onclick="validerScenarioActuel()">Valider mes choix pour ce scénario</button>
@@ -282,24 +322,28 @@
       <div class="card" style="text-align: center; padding: 30px 20px;">
         <h2 style="border:none; padding:0; color: var(--primary-color);">Session terminée</h2>
         <p class="instruction" style="font-size:1.1em; margin-top:20px;">Merci beaucoup pour votre participation.</p>
-        <p style="color: #6B7280; font-size: 0.9em;">Veuillez laisser cet écran ouvert et indiquer au chercheur que vous avez terminé.</p>
+        <p style="color: #6B7280; font-size: 0.9em; margin-bottom: 30px;">Veuillez laisser cet écran ouvert et le remettre au chercheur.</p>
         
-        <div id="qrcode"></div>
-        <p style="font-size: 0.8em; color: #9CA3AF; margin-top: 10px;">[ Scan sécurisé - Ligne CSV locale ]</p>
-        
-        <button onclick="reinitialiserTout()" style="background-color: #6B7280; margin-top: 40px;">Nouvelle passation</button>
+        <div style="background-color: var(--gray-light); border: 2px dashed var(--gray-border); border-radius: 8px; padding: 25px; text-align: left;">
+          <h3 style="margin-top: 0; color: var(--text-color); font-size: 1.1em; text-align: center;">📋 Espace Chercheur</h3>
+          <p style="font-size: 0.85em; color: #4B5563; margin-bottom: 20px; text-align: center;">Sélectionnez l'une des options pour récupérer la ligne de données CSV :</p>
+          
+          <button onclick="copierCSV()" style="background-color: #10B981; margin-top: 10px; padding: 12px; font-size: 0.95em;">📋 Copier la ligne de résultats</button>
+          <button onclick="telechargerCSV()" style="background-color: #3B82F6; margin-top: 12px; padding: 12px; font-size: 0.95em;">💾 Télécharger le fichier CSV</button>
+        </div>
+
+        <button onclick="reinitialiserTout()" style="background-color: #EF4444; margin-top: 40px; font-size: 0.9em; padding: 10px;">Nouvelle passation (Effacer l'appareil)</button>
       </div>
     </div>
 
   </div>
 
   <script>
-    // Configuration officielle des scénarios et liens de vos prototypes Figma
     const listeScenarios = [
-      { id: "neutre", nom: "Le scénario Vert", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=931-9406&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=931%3A9406&show-proto-sidebar=1" },
-      { id: "player", nom: "Le scénario Violet", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=456-8237&t=4WTJTWnQY9sdySwt-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=456%3A8237&show-proto-sidebar=1" },
-      { id: "achiever", nom: "Le scénario Bleu", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=705-5984&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=705%3A5984&show-proto-sidebar=1" },
-      { id: "philanthrope", nom: "Le scénario Oorange", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=726-14147&t=V4hZViiH6QjlVh7F-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=726%3A14147&show-proto-sidebar=1" }
+      { id: "neutre", nom: "Le scénario neutre (vert)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=931-9406&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=931%3A9406&show-proto-sidebar=1" },
+      { id: "player", nom: "Le scénario “player” (violet)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=456-8237&t=4WTJTWnQY9sdySwt-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=456%3A8237&show-proto-sidebar=1" },
+      { id: "achiever", nom: "Le scénario “achiever” (bleu)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=705-5984&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=705%3A5984&show-proto-sidebar=1" },
+      { id: "philanthrope", nom: "Le scénario ”philanthrope” (orange)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=726-14147&t=V4hZViiH6QjlVh7F-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=726%3A14147&show-proto-sidebar=1" }
     ];
 
     const questionsPHQ9 = [
@@ -308,10 +352,10 @@
       "Difficultés à s'endormir ou à rester endormi(e), ou dormir trop",
       "Se sentir fatigué(e) ou manquer d'énergie",
       "Avoir peu d'appétit ou manger trop",
-      "Avoir une mauvaise opinion de soi-même, ou avoir le sentiment d'être nul(le), ou d'avoir déçu sa famille ou s'être déçu(e) soi-même",
-      "Avoir du mal à se concentrer, par exemple, pour lire le journal ou regarder la télévision",
-      "Bouger ou parler si lentement que les autres auraient pu le remarquer. Ou au contraire, être si agité(e) que vous avez eu du mal à tenir en place par rapport à d'habitude",
-      "Penser qu'il vaudrait mieux mourir ou envisager de vous faire du mal d'une manière ou d'une autre"
+      "Avoir une mauvaise opinion de soi-même, ou avoir le sentiment d'être nul(le)...",
+      "Avoir du mal à se concentrer, par exemple, pour lire le journal...",
+      "Bouger ou parler si lentement que les autres auraient pu le remarquer...",
+      "Penser qu'il vaudrait mieux mourir ou envisager de vous faire du mal..."
     ];
 
     const questionsHexad = [
@@ -343,47 +387,93 @@
 
     const likertLabels = ["Pas du tout d'accord", "Plutôt pas d'accord", "Neutre", "Plutôt d'accord", "Tout à fait d'accord"];
     let state = { page: 1, indexScenario: 0, ordre: [], reponses: {} };
+    let ligneCSVGlobale = ""; // Stocke la ligne finale
+
+    // NOUVELLE FONCTION LOGIQUE : ALLUME OU ÉTEINT L'ALERTE ROUGE SUR UN BLOC D'ID DONNÉ
+    function gererErreur(idBlock, afficher) {
+      const block = document.getElementById(idBlock);
+      if (!block) return;
+      if (afficher) {
+        block.classList.add("has-error");
+        const errTxt = block.querySelector(".error-text");
+        if (errTxt) errTxt.style.display = "block";
+      } else {
+        block.classList.remove("has-error");
+        const errTxt = block.querySelector(".error-text");
+        if (errTxt) errTxt.style.display = "none";
+      }
+    }
 
     function initBuilders() {
       const phqCont = document.getElementById("phq9-container");
       phqCont.innerHTML = questionsPHQ9.map((q, i) => `
-        <label class="form-label">${i+1}. ${q}</label>
-        <div class="radio-group">
-          ${["Jamais", "Plusieurs jours", "Plus de la moitié des jours", "Presque tous les jours"].map((lbl, v) => `
-            <label class="radio-option"><input type="radio" name="phq_${i}" value="${v}" onchange="sauvegarderEtat()"> ${lbl}</label>
-          `).join('')}
+        <div class="question-block" id="block_phq_${i}">
+          <label class="form-label">${i+1}. ${q}</label>
+          <div class="radio-group">
+            ${["Jamais", "Plusieurs jours", "Plus de la moitié des jours", "Presque tous les jours"].map((lbl, v) => `
+              <label class="radio-option"><input type="radio" name="phq_${i}" value="${v}" onchange="sauvegarderEtat(); gererErreur('block_phq_${i}', false)"> ${lbl}</label>
+            `).join('')}
+          </div>
+          <div class="error-text">⚠️ Veuillez répondre à cette évaluation d'humeur.</div>
         </div>
       `).join('');
 
       const hexadCont = document.getElementById("hexad-container");
       hexadCont.innerHTML = questionsHexad.map((q) => `
-        <label class="form-label">${q.txt}</label>
-        <div class="radio-group">
-          ${likertLabels.map((lbl, v) => `
-            <label class="radio-option"><input type="radio" name="hexad_${q.id}" value="${v+1}" onchange="sauvegarderEtat()"> ${lbl}</label>
-          `).join('')}
+        <div class="question-block" id="block_hexad_${q.id}">
+          <label class="form-label">${q.txt}</label>
+          <div class="radio-group">
+            ${likertLabels.map((lbl, v) => `
+              <label class="radio-option"><input type="radio" name="hexad_${q.id}" value="${v+1}" onchange="sauvegarderEtat(); gererErreur('block_hexad_${q.id}', false)"> ${lbl}</label>
+            `).join('')}
+          </div>
+          <div class="error-text">⚠️ Veuillez évaluer cette affirmation de description personnelle.</div>
         </div>
       `).join('');
 
       const tamCont = document.getElementById("tam-container");
       tamCont.innerHTML = questionsTAM.map((q) => `
-        <label class="form-label">${q.txt}</label>
-        <div class="radio-group">
-          ${likertLabels.map((lbl, v) => `
-            <label class="radio-option"><input type="radio" name="tam_${q.id}" value="${v+1}"> ${lbl}</label>
-          `).join('')}
+        <div class="question-block" id="block_tam_${q.id}">
+          <label class="form-label">${q.txt}</label>
+          <div class="radio-group">
+            ${likertLabels.map((lbl, v) => `
+              <label class="radio-option"><input type="radio" name="tam_${q.id}" value="${v+1}" onchange="gererErreur('block_tam_${q.id}', false)"> ${lbl}</label>
+            `).join('')}
+          </div>
+          <div class="error-text">⚠️ Veuillez évaluer cette affirmation d'utilité.</div>
         </div>
       `).join('');
     }
 
     function naviguerVersPage(num) {
       if (num === 2) {
-        if (!document.getElementById("id_participant").value.trim() || !document.getElementById("age").value || !document.getElementById("genre").value || !document.getElementById("etudes").value || !document.getElementById("csp").value) {
-          alert("Veuillez remplir toutes les informations générales obligatoires."); return;
+        let sansErreur = true;
+        let premierElementErreur = null;
+
+        function verifierEtMarquer(condition, idBlock) {
+          if (condition) {
+            gererErreur(idBlock, true);
+            sansErreur = false;
+            if (!premierElementErreur) premierElementErreur = document.getElementById(idBlock);
+          } else {
+            gererErreur(idBlock, false);
+          }
         }
-        if (!document.querySelector(`input[name="tech_fam"]:checked`)) { alert("Veuillez renseigner votre niveau de familiarité avec les technologies."); return; }
+
+        verifierEtMarquer(!document.getElementById("id_participant").value.trim(), "block_id_participant");
+        verifierEtMarquer(!document.getElementById("age").value, "block_age");
+        verifierEtMarquer(!document.getElementById("genre").value, "block_genre");
+        verifierEtMarquer(!document.getElementById("etudes").value, "block_etudes");
+        verifierEtMarquer(!document.getElementById("csp").value, "block_csp");
+        verifierEtMarquer(!document.querySelector(`input[name="tech_fam"]:checked`), "block_tech_fam");
+
         for (let i = 0; i < questionsPHQ9.length; i++) {
-          if (!document.querySelector(`input[name="phq_${i}"]:checked`)) { alert("Veuillez répondre à toutes les questions d'humeur."); return; }
+          verifierEtMarquer(!document.querySelector(`input[name="phq_${i}"]:checked`), `block_phq_${i}`);
+        }
+
+        if (!sansErreur) {
+          if (premierElementErreur) premierElementErreur.scrollIntoView({ behavior: "smooth", block: "center" });
+          return; // Bloque la navigation
         }
       }
       state.page = num;
@@ -398,11 +488,28 @@
     }
 
     function demarrerExperimentation() {
-      for (let q of questionsHexad) {
-        if (!document.querySelector(`input[name="hexad_${q.id}"]:checked`)) { alert("Veuillez évaluer toutes les affirmations de description personnelle."); return; }
+      let sansErreur = true;
+      let premierElementErreur = null;
+
+      function verifierEtMarquer(condition, idBlock) {
+        if (condition) {
+          gererErreur(idBlock, true);
+          sansErreur = false;
+          if (!premierElementErreur) premierElementErreur = document.getElementById(idBlock);
+        } else {
+          gererErreur(idBlock, false);
+        }
       }
-      if (!document.querySelector(`input[name="game_freq"]:checked`) || !document.querySelector(`input[name="game_points"]:checked`)) {
-        alert("Veuillez compléter vos habitudes de jeu."); return;
+
+      for (let q of questionsHexad) {
+        verifierEtMarquer(!document.querySelector(`input[name="hexad_${q.id}"]:checked`), `block_hexad_${q.id}`);
+      }
+      verifierEtMarquer(!document.querySelector(`input[name="game_freq"]:checked`), "block_game_freq");
+      verifierEtMarquer(!document.querySelector(`input[name="game_points"]:checked`), "block_game_points");
+
+      if (!sansErreur) {
+        if (premierElementErreur) premierElementErreur.scrollIntoView({ behavior: "smooth", block: "center" });
+        return; // Bloque la validation
       }
       
       if (!state.ordre || state.ordre.length === 0) {
@@ -420,6 +527,10 @@
     }
 
     function chargerScenarioActuel() {
+      if (state.indexScenario >= 4) {
+        genererSortieLocale();
+        return;
+      }
       const scen = state.ordre[state.indexScenario];
       document.getElementById("step-txt").innerText = `Scénario ${state.indexScenario + 1} sur 4`;
       document.getElementById("scenario-title").innerText = scen.nom;
@@ -427,19 +538,41 @@
 
       questionsTAM.forEach(q => {
         document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => r.checked = false);
+        gererErreur(`block_tam_${q.id}`, false); // Reset l'état visuel rouge
       });
       window.scrollTo(0, 0);
     }
 
     function validerScenarioActuel() {
+      let sansErreur = true;
+      let premierElementErreur = null;
+
+      function verifierEtMarquer(condition, idBlock) {
+        if (condition) {
+          gererErreur(idBlock, true);
+          sansErreur = false;
+          if (!premierElementErreur) premierElementErreur = document.getElementById(idBlock);
+        } else {
+          gererErreur(idBlock, false);
+        }
+      }
+
       const scen = state.ordre[state.indexScenario];
       let resTemp = {};
+
       for (let q of questionsTAM) {
         let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
-        if (!r) { alert("Veuillez évaluer l'ensemble des propositions d'intention d'utilisation."); return; }
-        resTemp[`scen_${scen.id}_${q.id}`] = r.value;
+        verifierEtMarquer(!r, `block_tam_${q.id}`);
+        if (r) {
+          resTemp[`scen_${scen.id}_${q.id}`] = r.value;
+        }
       }
       
+      if (!sansErreur) {
+        if (premierElementErreur) premierElementErreur.scrollIntoView({ behavior: "smooth", block: "center" });
+        return; // Bloque le scénario suivant
+      }
+
       Object.assign(state.reponses, resTemp);
       state.indexScenario++;
       sauvegarderEtat();
@@ -488,6 +621,12 @@
       let sav = localStorage.getItem("exp_etcc_state");
       if (!sav) return;
       let parsed = JSON.parse(sav);
+      
+      if (parsed.indexScenario > 3 || parsed.page > 4 || !parsed.ordre || parsed.ordre.length === 0) {
+        localStorage.removeItem("exp_etcc_state");
+        return;
+      }
+      
       state = parsed;
 
       document.getElementById("id_participant").value = state.reponses.id_participant || "";
@@ -532,7 +671,6 @@
       state.page = 4;
       AfficherPageActive();
 
-      // Structure fixe des colonnes pour aligner les donnees
       const colonnes = [
         "id_participant", "age", "genre", "etudes", "csp", "tech_fam",
         ...questionsPHQ9.map((_, i) => `phq9_q${i+1}`),
@@ -540,7 +678,6 @@
         "game_freq", "game_examples", "game_points", "ordre_presentation"
       ];
       
-      // Ajout predictible et structure par scenario (neutre, player, achiever, philanthrope)
       const scenariosId = ["neutre", "player", "achiever", "philanthrope"];
       scenariosId.forEach(sId => {
         questionsTAM.forEach(q => {
@@ -548,18 +685,28 @@
         });
       });
 
-      let ligneCSV = colonnes.map(col => {
+      ligneCSVGlobale = colonnes.map(col => {
         let val = state.reponses[col] || "";
         return `"${val.toString().replace(/"/g, '""')}"`;
       }).join(",");
+    }
 
-      document.getElementById("qrcode").innerHTML = "";
-      new QRCode(document.getElementById("qrcode"), {
-        text: ligneCSV,
-        width: 250,
-        height: 250,
-        correctLevel: QRCode.CorrectLevel.L
+    function copierCSV() {
+      navigator.clipboard.writeText(ligneCSVGlobale).then(() => {
+        alert("Succès ! La ligne CSV est copiée dans le presse-papier.");
+      }).catch(err => {
+        alert("Erreur d'accès au presse-papier sur ce téléphone. Utilisez le bouton Télécharger.");
       });
+    }
+
+    function telechargerCSV() {
+      const blob = new Blob(["\uFEFF" + ligneCSVGlobale], { type: 'text/csv;charset=utf-8;' });
+      const lien = document.createElement("a");
+      lien.href = URL.createObjectURL(blob);
+      lien.download = `participant_${state.reponses.id_participant || 'anonyme'}.csv`;
+      document.body.appendChild(lien);
+      lien.click();
+      document.body.removeChild(lien);
     }
 
     function reinitialiserTout() {
