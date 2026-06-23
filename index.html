@@ -226,15 +226,15 @@
 
     <div id="page-2" class="page">
       <h1>Vos Préférences (2/2)</h1>
-      <p class="instruction">Pour chaque affirmation, veuillez évaluer à quel point chaque affirmation vous décrit. Il vous prendra moins de 5 minutes. Il n’y a ni bonne ni mauvaise réponse. Nous vous invitons à répondre le plus spontanément et le plus sincèrement possible, en fonction de ce qui vous correspond réellement. Vos réponses seront traitées de manière strictement confidentielle et pseudonymisées grâce à votre code de participant.</p>
       
       <div class="card">
-        <h2>Description personnelle</h2>
+        <h2>Vos motivations</h2>
+        <p class="instruction">Pour chaque affirmation, veuillez évaluer à quel point chaque affirmation vous décrit.</p>
         <div id="hexad-container"></div>
       </div>
 
       <div class="card">
-        <h2>Habitudes de jeu</h2>
+        <h2>Vos habitudes de jeu</h2>
         
         <label class="form-label">À quelle fréquence jouez-vous à des jeux vidéo (sur smartphone, console, ordinateur) ? *</label>
         <div class="radio-group">
@@ -271,7 +271,7 @@
       </div>
 
       <div class="card">
-        <h2>Intention d'utilisation & Utilité</h2>
+        <h2>Votre avis</h2>
         <p class="instruction">Veuillez évaluer votre accord avec les affirmations suivantes concernant cette interface :</p>
         <div id="tam-container"></div>
         <button type="button" onclick="validerScenarioActuel()">Valider mes choix pour ce scénario</button>
@@ -296,10 +296,10 @@
   <script>
     // Configuration officielle des scénarios et liens de vos prototypes Figma
     const listeScenarios = [
-      { id: "neutre", nom: "Le scénario neutre (vert)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=931-9406&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=931%3A9406&show-proto-sidebar=1" },
-      { id: "player", nom: "Le scénario “player” (violet)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=456-8237&t=4WTJTWnQY9sdySwt-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=456%3A8237&show-proto-sidebar=1" },
-      { id: "achiever", nom: "Le scénario “achiever” (bleu)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=705-5984&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=705%3A5984&show-proto-sidebar=1" },
-      { id: "philanthrope", nom: "Le scénario ”philanthrope” (orange)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=726-14147&t=V4hZViiH6QjlVh7F-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=726%3A14147&show-proto-sidebar=1" }
+      { id: "neutre", nom: "Le scénario Vert", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=931-9406&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=931%3A9406&show-proto-sidebar=1" },
+      { id: "player", nom: "Le scénario Violet", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=456-8237&t=4WTJTWnQY9sdySwt-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=456%3A8237&show-proto-sidebar=1" },
+      { id: "achiever", nom: "Le scénario Bleu", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=705-5984&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=705%3A5984&show-proto-sidebar=1" },
+      { id: "philanthrope", nom: "Le scénario Oorange", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=726-14147&t=V4hZViiH6QjlVh7F-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=726%3A14147&show-proto-sidebar=1" }
     ];
 
     const questionsPHQ9 = [
