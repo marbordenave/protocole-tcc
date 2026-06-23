@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocole d'Expérimentation - eTCC</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg-color: #FFFFFF;
+      --text-color: #1F2937;
+      --primary-color: #2563EB;
+      --primary-text: #FFFFFF;
+      --accent-color: #60A5FA;
+      --gray-light: #F3F4F6;
+      --gray-border: #E5E7EB;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 15px;
+      line-height: 1.5;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding-bottom: 60px;
+    }
+
+    .card {
+      background: var(--bg-color);
+      border: 2px solid var(--gray-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      text-align: center;
+      color: var(--primary-color);
+      margin-top: 10px;
+    }
+
+    h2 {
+      font-size: 1.2em;
+      border-left: 4px solid var(--accent-color);
+      padding-left: 10px;
+      margin-top: 0;
+      color: var(--text-color);
+    }
+
+    p.instruction {
+      color: #4B5563;
+      font-size: 0.95em;
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    input[type="text"], select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--gray-border);
+      border-radius: 8px;
+      box-sizing: border-box;
+      font-size: 16px;
+      background-color: var(--gray-light);
+      color: var(--text-color);
+    }
+
+    textarea {
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border: 2px solid var(--gray-border);
+      border-radius: 8px;
+      background-color: var(--gray-light);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95em;
+    }
+
+    .radio-option input {
+      margin-right: 12px;
+      transform: scale(1.2);
+    }
+
+    button, .btn {
+      display: block;
+      width: 100%;
+      background-color: var(--primary-color);
+      color: var(--primary-text);
+      border: none;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      box-sizing: border-box;
+      margin-top: 25px;
+    }
+
+    button:active, .btn:active {
+      background-color: #1D4ED8;
+    }
+
+    .step-indicator {
+      text-align: center;
+      font-weight: bold;
+      color: var(--primary-color);
+      background: var(--gray-light);
+      padding: 8px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+    }
+
+    #qrcode {
+      display: flex;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <div id="page-1" class="page active">
+      <h1>Profil & Humeur (1/2)</h1>
+      <p class="instruction">Ce premier questionnaire a pour objectif de recueillir, dans un premier temps, quelques informations générales vous concernant, puis d’évaluer votre humeur actuelle. Il vous prendra moins de cinq minutes.</p>
+      
+      <div class="card">
+        <h2>Informations générales</h2>
+        
+        <label class="form-label" for="id_participant">Code de participation :</label>
+        <input type="text" id="id_participant" placeholder="Ex: S01" onchange="sauvegarderEtat()">
+
+        <label class="form-label" for="age">1. Dans quelle tranche d’âge vous situez-vous ? *</label>
+        <select id="age" onchange="sauvegarderEtat()">
+          <option value="">-- Sélectionner --</option>
+          <option value="Moins de 18 ans">Moins de 18 ans</option>
+          <option value="18 à 24 ans">18 à 24 ans</option>
+          <option value="25 à 34 ans">25 à 34 ans</option>
+          <option value="35 à 44 ans">35 à 44 ans</option>
+          <option value="45 à 54 ans">45 à 54 ans</option>
+          <option value="55 à 64 ans">55 à 64 ans</option>
+          <option value="65 ans et plus">65 ans et plus</option>
+        </select>
+
+        <label class="form-label" for="genre">2. Quel est votre genre ? *</label>
+        <select id="genre" onchange="sauvegarderEtat()">
+          <option value="">-- Sélectionner --</option>
+          <option value="Homme">Homme</option>
+          <option value="Femme">Femme</option>
+          <option value="Autre">Autre</option>
+        </select>
+
+        <label class="form-label" for="etudes">3. Quel est votre niveau d’études le plus élevé ? *</label>
+        <select id="etudes" onchange="sauvegarderEtat()">
+          <option value="">-- Sélectionner --</option>
+          <option value="Aucun diplôme">Aucun diplôme</option>
+          <option value="Brevet ou équivalent">Brevet ou équivalent</option>
+          <option value="Baccalauréat">Baccalauréat</option>
+          <option value="Bac à Bac +3">Bac à Bac +3</option>
+          <option value="Supérieur à Bac +3">Supérieur à Bac +3</option>
+        </select>
+
+        <label class="form-label" for="csp">4. À quelle catégorie socioprofessionnelle appartenez-vous ? *</label>
+        <select id="csp" onchange="sauvegarderEtat()">
+          <option value="">-- Sélectionner --</option>
+          <option value="Étudiant">Étudiant</option>
+          <option value="Agriculteur exploitant">Agriculteur exploitant</option>
+          <option value="Artisan, commerçant ou chef d'entreprise">Artisan, commerçant ou chef d'entreprise</option>
+          <option value="Cadre et profession intellectuelle supérieure">Cadre et profession intellectuelle supérieure</option>
+          <option value="Employé">Employé</option>
+          <option value="Ouvrier">Ouvrier</option>
+          <option value="Retraité">Retraité</option>
+          <option value="Autre personne sans activité professionnelle">Autre personne sans activité professionnelle</option>
+        </select>
+
+        <label class="form-label">5. Êtes-vous familier avec l’utilisation des nouvelles technologies ? *</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="tech_fam" value="Oui, très familier" onchange="sauvegarderEtat()"> Oui, très familier</label>
+          <label class="radio-option"><input type="radio" name="tech_fam" value="Moyennement familier" onchange="sauvegarderEtat()"> Moyennement familier</label>
+          <label class="radio-option"><input type="radio" name="tech_fam" value="Pas du tout familier" onchange="sauvegarderEtat()"> Pas du tout familier</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Évaluation de votre humeur</h2>
+        <p class="instruction">Au cours des 2 dernières semaines, selon quelle fréquence avez-vous été gêné(e) par les problèmes suivants ?</p>
+        <div id="phq9-container"></div>
+      </div>
+
+      <button onclick="naviguerVersPage(2)">Suivant : Préférences (2/2)</button>
+    </div>
+
+    <div id="page-2" class="page">
+      <h1>Vos Préférences (2/2)</h1>
+      <p class="instruction">Pour chaque affirmation, veuillez évaluer à quel point chaque affirmation vous décrit. Il vous prendra moins de 5 minutes. Il n’y a ni bonne ni mauvaise réponse. Nous vous invitons à répondre le plus spontanément et le plus sincèrement possible, en fonction de ce qui vous correspond réellement. Vos réponses seront traitées de manière strictement confidentielle et pseudonymisées grâce à votre code de participant.</p>
+      
+      <div class="card">
+        <h2>Description personnelle</h2>
+        <div id="hexad-container"></div>
+      </div>
+
+      <div class="card">
+        <h2>Habitudes de jeu</h2>
+        
+        <label class="form-label">À quelle fréquence jouez-vous à des jeux vidéo (sur smartphone, console, ordinateur) ? *</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="game_freq" value="Jamais" onchange="sauvegarderEtat()"> Jamais</label>
+          <label class="radio-option"><input type="radio" name="game_freq" value="Rarement" onchange="sauvegarderEtat()"> Rarement</label>
+          <label class="radio-option"><input type="radio" name="game_freq" value="Parfois" onchange="sauvegarderEtat()"> Parfois</label>
+          <label class="radio-option"><input type="radio" name="game_freq" value="Souvent" onchange="sauvegarderEtat()"> Souvent</label>
+          <label class="radio-option"><input type="radio" name="game_freq" value="Tous les jours" onchange="sauvegarderEtat()"> Tous les jours</label>
+        </div>
+
+        <label class="form-label" for="game_examples">Pouvez-vous donner quelques exemples de jeux auxquels vous jouez ?</label>
+        <textarea id="game_examples" rows="3" placeholder="Ex: Candy Crush, Tetris, Zelda..." onchange="sauvegarderEtat()"></textarea>
+
+        <label class="form-label">Je suis très à l'aise et habitué(e) avec les systèmes de points, de niveaux ou de défis dans les applications. *</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="game_points" value="1" onchange="sauvegarderEtat()"> Pas du tout d'accord</label>
+          <label class="radio-option"><input type="radio" name="game_points" value="2" onchange="sauvegarderEtat()"> Plutôt pas d'accord</label>
+          <label class="radio-option"><input type="radio" name="game_points" value="3" onchange="sauvegarderEtat()"> Neutre</label>
+          <label class="radio-option"><input type="radio" name="game_points" value="4" onchange="sauvegarderEtat()"> Plutôt d'accord</label>
+          <label class="radio-option"><input type="radio" name="game_points" value="5" onchange="sauvegarderEtat()"> Tout à fait d'accord</label>
+        </div>
+      </div>
+
+      <button onclick="demarrerExperimentation()">Commencer l'évaluation des scénarios</button>
+    </div>
+
+    <div id="page-3" class="page">
+      <div class="step-indicator" id="step-txt">Scénario 1 sur 4</div>
+
+      <div class="card">
+        <h2 id="scenario-title">Chargement du scénario...</h2>
+        <p class="instruction">Vous pouvez étudier l'interface via la maquette Figma interactive ci-dessous (L'ouverture est optionnelle).</p>
+        <a id="link-figma" href="#" target="_blank" class="btn">Consulter la maquette sur Figma</a>
+      </div>
+
+      <div class="card">
+        <h2>Intention d'utilisation & Utilité</h2>
+        <p class="instruction">Veuillez évaluer votre accord avec les affirmations suivantes concernant cette interface :</p>
+        <div id="tam-container"></div>
+        <button type="button" onclick="validerScenarioActuel()">Valider mes choix pour ce scénario</button>
+      </div>
+    </div>
+
+    <div id="page-4" class="page">
+      <div class="card" style="text-align: center; padding: 30px 20px;">
+        <h2 style="border:none; padding:0; color: var(--primary-color);">Session terminée</h2>
+        <p class="instruction" style="font-size:1.1em; margin-top:20px;">Merci beaucoup pour votre participation.</p>
+        <p style="color: #6B7280; font-size: 0.9em;">Veuillez laisser cet écran ouvert et indiquer au chercheur que vous avez terminé.</p>
+        
+        <div id="qrcode"></div>
+        <p style="font-size: 0.8em; color: #9CA3AF; margin-top: 10px;">[ Scan sécurisé - Ligne CSV locale ]</p>
+        
+        <button onclick="reinitialiserTout()" style="background-color: #6B7280; margin-top: 40px;">Nouvelle passation</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Configuration officielle des scénarios et liens de vos prototypes Figma
+    const listeScenarios = [
+      { id: "neutre", nom: "Le scénario neutre (vert)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=931-9406&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=931%3A9406&show-proto-sidebar=1" },
+      { id: "player", nom: "Le scénario “player” (violet)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=456-8237&t=4WTJTWnQY9sdySwt-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=456%3A8237&show-proto-sidebar=1" },
+      { id: "achiever", nom: "Le scénario “achiever” (bleu)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=705-5984&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=705%3A5984&show-proto-sidebar=1" },
+      { id: "philanthrope", nom: "Le scénario ”philanthrope” (orange)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=726-14147&t=V4hZViiH6QjlVh7F-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=726%3A14147&show-proto-sidebar=1" }
+    ];
+
+    const questionsPHQ9 = [
+      "Peu d'intérêt ou de plaisir à faire les choses",
+      "Être triste, déprimé(e) ou désespéré(e)",
+      "Difficultés à s'endormir ou à rester endormi(e), ou dormir trop",
+      "Se sentir fatigué(e) ou manquer d'énergie",
+      "Avoir peu d'appétit ou manger trop",
+      "Avoir une mauvaise opinion de soi-même, ou avoir le sentiment d'être nul(le), ou d'avoir déçu sa famille ou s'être déçu(e) soi-même",
+      "Avoir du mal à se concentrer, par exemple, pour lire le journal ou regarder la télévision",
+      "Bouger ou parler si lentement que les autres auraient pu le remarquer. Ou au contraire, être si agité(e) que vous avez eu du mal à tenir en place par rapport à d'habitude",
+      "Penser qu'il vaudrait mieux mourir ou envisager de vous faire du mal d'une manière ou d'une autre"
+    ];
+
+    const questionsHexad = [
+      { id: "indep", txt: "Être indépendant est important pour moi." },
+      { id: "recomp", txt: "Les récompenses sont un excellent moyen de me motiver." },
+      { id: "bienetre", txt: "Le bien-être des autres est important pour moi." },
+      { id: "rebelle", txt: "Je me vois comme une/un rebelle." },
+      { id: "equipe", txt: "J'aime faire partie d'une équipe." },
+      { id: "maitrise", txt: "J'aime maîtriser des tâches difficiles." },
+      { id: "chemin", txt: "Il est important pour moi de suivre mon propre chemin." },
+      { id: "aide", txt: "Aider les autres me rend heureux." },
+      { id: "regles", txt: "Je n'aime pas suivre les règles." },
+      { id: "victoire", txt: "J'aime sortir victorieux de circonstances difficiles." },
+      { id: "effort", txt: "Si la récompense est suffisante, je ferai l'effort." },
+      { id: "groupe", txt: "J'apprécie les activités de groupe." }
+    ];
+
+    const questionsTAM = [
+      { id: "recommande", txt: "Je recommanderais l’usage de cette application à d’autres utilisateurs." },
+      { id: "efficace", txt: "Cette application m’aiderait à accomplir mes tâches plus efficacement." },
+      { id: "perf", txt: "L’utilisation de cette application améliorerait ma performance dans cette activité." },
+      { id: "claire", txt: "L’interaction avec cette application serait claire et compréhensible." },
+      { id: "facile", txt: "Globalement, cette application serait facile à utiliser." },
+      { id: "regulier", txt: "Si j’en ai la possibilité, j’utiliserai cette application régulièrement." },
+      { id: "apprendre", txt: "Il serait facile pour moi d’apprendre à utiliser cette application." },
+      { id: "utile", txt: "Globalement, cette application serait utile pour moi." },
+      { id: "avenir", txt: "J’ai l’intention d’utiliser cette application (dans ce format) à l’avenir." }
+    ];
+
+    const likertLabels = ["Pas du tout d'accord", "Plutôt pas d'accord", "Neutre", "Plutôt d'accord", "Tout à fait d'accord"];
+    let state = { page: 1, indexScenario: 0, ordre: [], reponses: {} };
+
+    function initBuilders() {
+      const phqCont = document.getElementById("phq9-container");
+      phqCont.innerHTML = questionsPHQ9.map((q, i) => `
+        <label class="form-label">${i+1}. ${q}</label>
+        <div class="radio-group">
+          ${["Jamais", "Plusieurs jours", "Plus de la moitié des jours", "Presque tous les jours"].map((lbl, v) => `
+            <label class="radio-option"><input type="radio" name="phq_${i}" value="${v}" onchange="sauvegarderEtat()"> ${lbl}</label>
+          `).join('')}
+        </div>
+      `).join('');
+
+      const hexadCont = document.getElementById("hexad-container");
+      hexadCont.innerHTML = questionsHexad.map((q) => `
+        <label class="form-label">${q.txt}</label>
+        <div class="radio-group">
+          ${likertLabels.map((lbl, v) => `
+            <label class="radio-option"><input type="radio" name="hexad_${q.id}" value="${v+1}" onchange="sauvegarderEtat()"> ${lbl}</label>
+          `).join('')}
+        </div>
+      `).join('');
+
+      const tamCont = document.getElementById("tam-container");
+      tamCont.innerHTML = questionsTAM.map((q) => `
+        <label class="form-label">${q.txt}</label>
+        <div class="radio-group">
+          ${likertLabels.map((lbl, v) => `
+            <label class="radio-option"><input type="radio" name="tam_${q.id}" value="${v+1}"> ${lbl}</label>
+          `).join('')}
+        </div>
+      `).join('');
+    }
+
+    function naviguerVersPage(num) {
+      if (num === 2) {
+        if (!document.getElementById("id_participant").value.trim() || !document.getElementById("age").value || !document.getElementById("genre").value || !document.getElementById("etudes").value || !document.getElementById("csp").value) {
+          alert("Veuillez remplir toutes les informations générales obligatoires."); return;
+        }
+        if (!document.querySelector(`input[name="tech_fam"]:checked`)) { alert("Veuillez renseigner votre niveau de familiarité avec les technologies."); return; }
+        for (let i = 0; i < questionsPHQ9.length; i++) {
+          if (!document.querySelector(`input[name="phq_${i}"]:checked`)) { alert("Veuillez répondre à toutes les questions d'humeur."); return; }
+        }
+      }
+      state.page = num;
+      sauvegarderEtat();
+      AfficherPageActive();
+    }
+
+    function AfficherPageActive() {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.getElementById(`page-${state.page}`).classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function demarrerExperimentation() {
+      for (let q of questionsHexad) {
+        if (!document.querySelector(`input[name="hexad_${q.id}"]:checked`)) { alert("Veuillez évaluer toutes les affirmations de description personnelle."); return; }
+      }
+      if (!document.querySelector(`input[name="game_freq"]:checked`) || !document.querySelector(`input[name="game_points"]:checked`)) {
+        alert("Veuillez compléter vos habitudes de jeu."); return;
+      }
+      
+      if (!state.ordre || state.ordre.length === 0) {
+        let scens = [...listeScenarios];
+        for (let i = scens.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [scens[i], scens[j]] = [scens[j], scens[i]];
+        }
+        state.ordre = scens;
+      }
+      state.page = 3;
+      sauvegarderEtat();
+      AfficherPageActive();
+      chargerScenarioActuel();
+    }
+
+    function chargerScenarioActuel() {
+      const scen = state.ordre[state.indexScenario];
+      document.getElementById("step-txt").innerText = `Scénario ${state.indexScenario + 1} sur 4`;
+      document.getElementById("scenario-title").innerText = scen.nom;
+      document.getElementById("link-figma").href = scen.url;
+
+      questionsTAM.forEach(q => {
+        document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => r.checked = false);
+      });
+      window.scrollTo(0, 0);
+    }
+
+    function validerScenarioActuel() {
+      const scen = state.ordre[state.indexScenario];
+      let resTemp = {};
+      for (let q of questionsTAM) {
+        let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
+        if (!r) { alert("Veuillez évaluer l'ensemble des propositions d'intention d'utilisation."); return; }
+        resTemp[`scen_${scen.id}_${q.id}`] = r.value;
+      }
+      
+      Object.assign(state.reponses, resTemp);
+      state.indexScenario++;
+      sauvegarderEtat();
+
+      if (state.indexScenario < 4) {
+        chargerScenarioActuel();
+      } else {
+        genererSortieLocale();
+      }
+    }
+
+    function sauvegarderEtat() {
+      state.reponses.id_participant = document.getElementById("id_participant").value;
+      state.reponses.age = document.getElementById("age").value;
+      state.reponses.genre = document.getElementById("genre").value;
+      state.reponses.etudes = document.getElementById("etudes").value;
+      state.reponses.csp = document.getElementById("csp").value;
+      
+      let tf = document.querySelector(`input[name="tech_fam"]:checked`);
+      state.reponses.tech_fam = tf ? tf.value : "";
+      
+      questionsPHQ9.forEach((_, i) => {
+        let r = document.querySelector(`input[name="phq_${i}"]:checked`);
+        state.reponses[`phq9_q${i+1}`] = r ? r.value : "";
+      });
+
+      questionsHexad.forEach(q => {
+        let r = document.querySelector(`input[name="hexad_${q.id}"]:checked`);
+        state.reponses[`hexad_${q.id}`] = r ? r.value : "";
+      });
+
+      let gf = document.querySelector(`input[name="game_freq"]:checked`);
+      state.reponses.game_freq = gf ? gf.value : "";
+      state.reponses.game_examples = document.getElementById("game_examples").value;
+      let gp = document.querySelector(`input[name="game_points"]:checked`);
+      state.reponses.game_points = gp ? gp.value : "";
+
+      if(state.ordre && state.ordre.length > 0) {
+        state.reponses.ordre_presentation = state.ordre.map(s => s.id).join('-');
+      }
+
+      localStorage.setItem("exp_etcc_state", JSON.stringify(state));
+    }
+
+    function chargerEtatSauvegarde() {
+      let sav = localStorage.getItem("exp_etcc_state");
+      if (!sav) return;
+      let parsed = JSON.parse(sav);
+      state = parsed;
+
+      document.getElementById("id_participant").value = state.reponses.id_participant || "";
+      document.getElementById("age").value = state.reponses.age || "";
+      document.getElementById("genre").value = state.reponses.genre || "";
+      document.getElementById("etudes").value = state.reponses.etudes || "";
+      document.getElementById("csp").value = state.reponses.csp || "";
+
+      if(state.reponses.tech_fam) {
+        let rad = document.querySelector(`input[name="tech_fam"][value="${state.reponses.tech_fam}"]`);
+        if(rad) rad.checked = true;
+      }
+      questionsPHQ9.forEach((_, i) => {
+        let val = state.reponses[`phq9_q${i+1}`];
+        if(val) { let rad = document.querySelector(`input[name="phq_${i}"][value="${val}"]`); if(rad) rad.checked = true; }
+      });
+      questionsHexad.forEach(q => {
+        let val = state.reponses[`hexad_${q.id}`];
+        if(val) { let rad = document.querySelector(`input[name="hexad_${q.id}"][value="${val}"]`); if(rad) rad.checked = true; }
+      });
+      if(state.reponses.game_freq) {
+        let rad = document.querySelector(`input[name="game_freq"][value="${state.reponses.game_freq}"]`);
+        if(rad) rad.checked = true;
+      }
+      document.getElementById("game_examples").value = state.reponses.game_examples || "";
+      if(state.reponses.game_points) {
+        let rad = document.querySelector(`input[name="game_points"][value="${state.reponses.game_points}"]`);
+        if(rad) rad.checked = true;
+      }
+
+      if (state.page === 3) {
+        AfficherPageActive();
+        chargerScenarioActuel();
+      } else if (state.page === 4) {
+        genererSortieLocale();
+      } else {
+        AfficherPageActive();
+      }
+    }
+
+    function genererSortieLocale() {
+      state.page = 4;
+      AfficherPageActive();
+
+      // Structure fixe des colonnes pour aligner les donnees
+      const colonnes = [
+        "id_participant", "age", "genre", "etudes", "csp", "tech_fam",
+        ...questionsPHQ9.map((_, i) => `phq9_q${i+1}`),
+        ...questionsHexad.map(q => `hexad_${q.id}`),
+        "game_freq", "game_examples", "game_points", "ordre_presentation"
+      ];
+      
+      // Ajout predictible et structure par scenario (neutre, player, achiever, philanthrope)
+      const scenariosId = ["neutre", "player", "achiever", "philanthrope"];
+      scenariosId.forEach(sId => {
+        questionsTAM.forEach(q => {
+          colonnes.push(`scen_${sId}_${q.id}`);
+        });
+      });
+
+      let ligneCSV = colonnes.map(col => {
+        let val = state.reponses[col] || "";
+        return `"${val.toString().replace(/"/g, '""')}"`;
+      }).join(",");
+
+      document.getElementById("qrcode").innerHTML = "";
+      new QRCode(document.getElementById("qrcode"), {
+        text: ligneCSV,
+        width: 250,
+        height: 250,
+        correctLevel: QRCode.CorrectLevel.L
+      });
+    }
+
+    function reinitialiserTout() {
+      if(confirm("Attention, cela va effacer la session en cours pour une nouvelle passation.")) {
+        localStorage.removeItem("exp_etcc_state");
+        location.reload();
+      }
+    }
+
+    window.onload = function() {
+      initBuilders();
+      chargerEtatSauvegarde();
+    };
+  </script>
+</body>
+</html>
