@@ -407,6 +407,7 @@
       { id: "s4", txt: "J'apprécie les activités de groupe." }
     ];
 
+
     const questionsTAM = [
      { id: "PEOU4", txt: "Je trouve qu'il est facile d'interagir avec X de manière flexible." }
     { id: "PU2", txt: "L'utilisation de X améliore mes performances dans mon travail." }
@@ -590,17 +591,17 @@
       document.getElementById("scenario-title").innerText = scen.nom;
       document.getElementById("link-figma").href = scen.url;
 
-      // Cette partie restaure les boutons si la page a été rechargée, ou vide tout proprement
+      // Restauration propre des boutons cochés pour ce scénario spécifique
       questionsTAM.forEach(q => {
         let savedVal = state.reponses[`scen_${scen.id}_${q.id}`];
         document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => {
           if (savedVal && r.value === savedVal) {
             r.checked = true;
           } else {
-            r.checked = false; // Vide la case si aucune valeur n'est trouvée pour ce scénario précis
+            r.checked = false;
           }
         });
-        gererErreur(`block_tam_${q.id}`, false); 
+        gererErreur(`block_tam_${q.id}`, false);
       });
       window.scrollTo(0, 0);
     }
@@ -619,7 +620,9 @@
         }
       }
 
-      // Validation visuelle avant de continuer
+      const scen = state.ordre[state.indexScenario];
+
+      // Vérification des réponses pour le scénario actuel
       for (let q of questionsTAM) {
         let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
         verifierEtMarquer(!r, `block_tam_${q.id}`);
@@ -630,18 +633,23 @@
         return;
       }
 
-      // --- CORRECTION ET ENCHAÎNEMENT SÉCURISÉ ---
-      // 1. On fige et mémorise d'abord les réponses du scénario actuel en arrière-plan
+      // 1. On mémorise définitivement les choix du scénario en cours
+      questionsTAM.forEach(q => {
+        let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
+        if (r) state.reponses[`scen_${scen.id}_${q.id}`] = r.value;
+      });
+
+      // 2. On avance l'index du scénario
+      state.indexScenario++;
+
+      // 3. On nettoie visuellement l'écran pour le prochain scénario
+      questionsTAM.forEach(q => {
+        document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => r.checked = false);
+      });
+
+      // 4. On lance la sauvegarde globale (sans risque de contamination)
       sauvegarderEtat();
 
-      // 2. On change l'index du scénario seulement APRÈS la sauvegarde
-      state.indexScenario++;
-      
-      // 3. On met directement à jour le statut global du localStorage sans exécuter sauvegarderEtat() 
-      // (qui aurait relu le DOM encore "rempli" de l'ancien scénario)
-      localStorage.setItem("exp_etcc_state", JSON.stringify(state));
-
-      // 4. On passe au scénario suivant ou à la fin (chargerScenarioActuel se chargera de vider l'écran)
       if (state.indexScenario < 4) {
         chargerScenarioActuel();
       } else {
@@ -678,6 +686,7 @@
       if (state.ordre && state.ordre.length > 0) {
         state.reponses.ordre_presentation = state.ordre.map(s => s.id).join('-');
         
+        // Sauvegarde en temps réel si l'utilisateur coche pendant le scénario en cours
         if (state.page === 3 && state.ordre[state.indexScenario]) {
           const scen = state.ordre[state.indexScenario];
           questionsTAM.forEach(q => {
@@ -704,41 +713,41 @@
         return;
       }
 
-      // Restauration des champs textuels et sélections
       if (document.getElementById("id_participant")) document.getElementById("id_participant").value = state.reponses.id_participant || "";
       if (document.getElementById("age")) document.getElementById("age").value = state.reponses.age || "";
       if (document.getElementById("genre")) document.getElementById("genre").value = state.reponses.genre || "";
       if (document.getElementById("etudes")) document.getElementById("etudes").value = state.reponses.etudes || "";
       if (document.getElementById("csp")) document.getElementById("csp").value = state.reponses.csp || "";
-      
-      let tf = document.querySelector(`input[name="tech_fam"][value="${state.reponses.tech_fam}"]`);
-      if (tf) tf.checked = true;
-      
+
+      if (state.reponses.tech_fam) {
+        let rad = document.querySelector(`input[name="tech_fam"][value="${state.reponses.tech_fam}"]`);
+        if (rad) rad.checked = true;
+      }
+
       questionsPHQ9.forEach((_, i) => {
         let val = state.reponses[`phq9_q${i+1}`];
-        if (val !== undefined) {
-          let r = document.querySelector(`input[name="phq_${i}"][value="${val}"]`);
-          if (r) r.checked = true;
+        if (val !== undefined && val !== "") {
+          let rad = document.querySelector(`input[name="phq_${i}"][value="${val}"]`);
+          if (rad) rad.checked = true;
         }
       });
 
       questionsHexad.forEach(q => {
         let val = state.reponses[`hexad_${q.id}`];
-        if (val !== undefined) {
-          let r = document.querySelector(`input[name="hexad_${q.id}"][value="${val}"]`);
-          if (r) r.checked = true;
+        if (val !== undefined && val !== "") {
+          let rad = document.querySelector(`input[name="hexad_${q.id}"][value="${val}"]`);
+          if (rad) rad.checked = true;
         }
       });
 
       if (state.reponses.game_freq) {
-        let gf = document.querySelector(`input[name="game_freq"][value="${state.reponses.game_freq}"]`);
-        if (gf) gf.checked = true;
+        let rad = document.querySelector(`input[name="game_freq"][value="${state.reponses.game_freq}"]`);
+        if (rad) rad.checked = true;
       }
       if (document.getElementById("game_examples")) document.getElementById("game_examples").value = state.reponses.game_examples || "";
-      
       if (state.reponses.game_points) {
-        let gp = document.querySelector(`input[name="game_points"][value="${state.reponses.game_points}"]`);
-        if (gp) gp.checked = true;
+        let rad = document.querySelector(`input[name="game_points"][value="${state.reponses.game_points}"]`);
+        if (rad) rad.checked = true;
       }
 
       AfficherPageActive();
@@ -793,16 +802,16 @@
     }
 
     function reinitialiserTout() {
-      if (confirm("Attention, cela va effacer la session en cours pour une nouvelle passation. Continuer ?")) {
+      if (confirm("Attention, cela va effacer la session en cours pour une nouvelle passation.")) {
         localStorage.removeItem("exp_etcc_state");
-        window.location.reload();
+        location.reload();
       }
     }
 
-    window.onload = function () {
-    initBuilders();
-    chargerEtatSauvegarde();
-      };
+    window.onload = function() {
+      initBuilders();
+      chargerEtatSauvegarde();
+    };
   </script>
 </body>
 </html>
