@@ -388,7 +388,7 @@
       "Avoir une mauvaise opinion de soi-même, ou avoir le sentiment d'être nul(le)...",
       "Avoir du mal à se concentrer, par exemple, pour lire le journal...",
       "Bouger ou parler si lentement que les autres auraient pu le remarquer...",
-      "Penser qu'il vaudrait mieux mourir ou envisager de vous faire du mal..."
+      "Penser qu'il vaulter mieux mourir ou envisager de vous faire du mal..."
     ];
 
     const questionsHexad = [
@@ -406,7 +406,6 @@
       { id: "s4", txt: "J'apprécie les activités de groupe." }
     ];
 
-    // Correction ici : Ajout des virgules manquantes entre chaque objet
     const questionsTAM = [
       { id: "PEOU4", txt: "Je trouve qu'il est facile d'interagir avec X de manière flexible." },
       { id: "PU2", txt: "L'utilisation de X améliore mes performances dans mon travail." },
@@ -650,15 +649,18 @@
       }
     }
 
+    // PROTECTION SÉCURISÉE : N'écrase pas une valeur existante par du vide si le DOM est inactif
     function sauvegarderEtat() {
-      if (document.getElementById("id_participant")) state.reponses.id_participant = document.getElementById("id_participant").value;
-      if (document.getElementById("age")) state.reponses.age = document.getElementById("age").value;
-      if (document.getElementById("genre")) state.reponses.genre = document.getElementById("genre").value;
-      if (document.getElementById("etudes")) state.reponses.etudes = document.getElementById("etudes").value;
-      if (document.getElementById("csp")) state.reponses.csp = document.getElementById("csp").value;
+      if (document.getElementById("id_participant") && document.getElementById("id_participant").value) {
+        state.reponses.id_participant = document.getElementById("id_participant").value;
+      }
+      if (document.getElementById("age") && document.getElementById("age").value) state.reponses.age = document.getElementById("age").value;
+      if (document.getElementById("genre") && document.getElementById("genre").value) state.reponses.genre = document.getElementById("genre").value;
+      if (document.getElementById("etudes") && document.getElementById("etudes").value) state.reponses.etudes = document.getElementById("etudes").value;
+      if (document.getElementById("csp") && document.getElementById("csp").value) state.reponses.csp = document.getElementById("csp").value;
       
       let tf = document.querySelector(`input[name="tech_fam"]:checked`);
-      state.reponses.tech_fam = tf ? tf.value : "";
+      if (tf) state.reponses.tech_fam = tf.value;
       
       questionsPHQ9.forEach((_, i) => {
         let r = document.querySelector(`input[name="phq_${i}"]:checked`);
@@ -671,10 +673,14 @@
       });
 
       let gf = document.querySelector(`input[name="game_freq"]:checked`);
-      state.reponses.game_freq = gf ? gf.value : "";
-      if (document.getElementById("game_examples")) state.reponses.game_examples = document.getElementById("game_examples").value;
+      if (gf) state.reponses.game_freq = gf.value;
+      
+      if (document.getElementById("game_examples") && document.getElementById("game_examples").value) {
+        state.reponses.game_examples = document.getElementById("game_examples").value;
+      }
+      
       let gp = document.querySelector(`input[name="game_points"]:checked`);
-      state.reponses.game_points = gp ? gp.value : "";
+      if (gp) state.reponses.game_points = gp.value;
 
       if (state.ordre && state.ordre.length > 0) {
         state.reponses.ordre_presentation = state.ordre.map(s => s.id).join('-');
@@ -693,7 +699,7 @@
       localStorage.setItem("exp_etcc_state", JSON.stringify(state));
     }
 
-    // Reconstruction propre de la fin du script coupée
+    // RESTAURATION SÉCURISÉE : Recharge l'intégralité du DOM (y compris Hexad et Jeu)
     function chargerEtatSauvegarde() {
       let sav = localStorage.getItem("exp_etcc_state");
       if (!sav) return;
@@ -717,6 +723,26 @@
             if (r) r.checked = true;
           }
         });
+
+        questionsHexad.forEach(q => {
+          let val = state.reponses[`hexad_${q.id}`];
+          if (val !== undefined) {
+            let r = document.querySelector(`input[name="hexad_${q.id}"][value="${val}"]`);
+            if (r) r.checked = true;
+          }
+        });
+
+        if (state.reponses.game_freq) {
+          let r = document.querySelector(`input[name="game_freq"][value="${state.reponses.game_freq}"]`);
+          if (r) r.checked = true;
+        }
+        if (state.reponses.game_examples && document.getElementById("game_examples")) {
+          document.getElementById("game_examples").value = state.reponses.game_examples;
+        }
+        if (state.reponses.game_points) {
+          let r = document.querySelector(`input[name="game_points"][value="${state.reponses.game_points}"]`);
+          if (r) r.checked = true;
+        }
 
         AfficherPageActive();
         if (state.page === 3) chargerScenarioActuel();
@@ -782,7 +808,6 @@
       }
     }
 
-    // DÉCLENCHEMENT AUTOMATIQUE AU CHARGEMENT DE LA PAGE
     window.onload = function() {
       initBuilders();
       chargerEtatSauvegarde();
