@@ -787,9 +787,10 @@
       }
     }
 
-    // Lancement automatique à l'ouverture ou rechargement
+    window.onload = function () {
     initBuilders();
     chargerEtatSauvegarde();
+      };
   </script>
 </body>
 </html>
