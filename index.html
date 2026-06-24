@@ -67,6 +67,7 @@
       margin-bottom: 8px;
     }
 
+    /* --- GESTION DES ERREURS BLOCS (ROUGE) --- */
     .question-block {
       padding: 10px;
       border-radius: 8px;
@@ -339,7 +340,7 @@
 
       <div class="card">
         <h2 id="scenario-title">Chargement du scénario...</h2>
-        <p class="instruction">Vous pouvez étudier l'interface via la maquette Figma interactive ci-dessous.</p>
+        <p class="instruction">La maquette s'ouvrira dans un nouvel onglet. <b>Pensez à revenir sur cet onglet</b> pour valider vos réponses.</p>
         <a id="link-figma" href="#" target="_blank" class="btn">Consulter la maquette sur Figma</a>
       </div>
 
@@ -472,7 +473,7 @@
               <label class="radio-option"><input type="radio" name="tam_${q.id}" value="${v+1}" onchange="sauvegarderEtat(); gererErreur('block_tam_${q.id}', false)"> ${lbl}</label>
             `).join('')}
           </div>
-          <div class="error-text">⚠️ Veuillez évaluer cette affirmation.</div>
+          <div class="error-text">⚠️ Veuillez évaluer cette affirmation d'utilité.</div>
         </div>
       `).join('');
     }
@@ -571,11 +572,13 @@
         genererSortieLocale();
         return;
       }
+      
       const scen = state.ordre[state.indexScenario];
       document.getElementById("step-txt").innerText = `Scénario ${state.indexScenario + 1} sur 4`;
       document.getElementById("scenario-title").innerText = scen.nom;
       document.getElementById("link-figma").href = scen.url;
 
+      // Cette partie restaure intelligemment les boutons si la page a été rechargée après un passage sur Figma
       questionsTAM.forEach(q => {
         let savedVal = state.reponses[`scen_${scen.id}_${q.id}`];
         document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => {
@@ -585,7 +588,7 @@
             r.checked = false;
           }
         });
-        gererErreur(`block_tam_${q.id}`, false);
+        gererErreur(`block_tam_${q.id}`, false); // Réinitialise le visuel d'erreur
       });
       window.scrollTo(0, 0);
     }
@@ -606,6 +609,7 @@
 
       const scen = state.ordre[state.indexScenario];
 
+      // Vérification des réponses pour le scénario actuel
       for (let q of questionsTAM) {
         let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
         verifierEtMarquer(!r, `block_tam_${q.id}`);
@@ -616,6 +620,7 @@
         return;
       }
 
+      // Si tout est bon, on incrémente et on sauvegarde
       state.indexScenario++;
       sauvegarderEtat();
 
@@ -638,12 +643,12 @@
       
       questionsPHQ9.forEach((_, i) => {
         let r = document.querySelector(`input[name="phq_${i}"]:checked`);
-        state.reponses[`phq9_q${i+1}`] = r ? r.value : "";
+        if (r) state.reponses[`phq9_q${i+1}`] = r.value;
       });
 
       questionsHexad.forEach(q => {
         let r = document.querySelector(`input[name="hexad_${q.id}"]:checked`);
-        state.reponses[`hexad_${q.id}`] = r ? r.value : "";
+        if (r) state.reponses[`hexad_${q.id}`] = r.value;
       });
 
       let gf = document.querySelector(`input[name="game_freq"]:checked`);
@@ -652,9 +657,10 @@
       let gp = document.querySelector(`input[name="game_points"]:checked`);
       state.reponses.game_points = gp ? gp.value : "";
 
-      if(state.ordre && state.ordre.length > 0) {
+      if (state.ordre && state.ordre.length > 0) {
         state.reponses.ordre_presentation = state.ordre.map(s => s.id).join('-');
         
+        // C'est ce bloc qui permet de sauvegarder en direct pendant le scénario
         if (state.page === 3 && state.ordre[state.indexScenario]) {
           const scen = state.ordre[state.indexScenario];
           questionsTAM.forEach(q => {
@@ -673,56 +679,61 @@
       let sav = localStorage.getItem("exp_etcc_state");
       if (!sav) return;
       
-      state = JSON.parse(sav);
+      try {
+        let parsed = JSON.parse(sav);
+        if (!parsed || !parsed.reponses) return;
+        state = parsed;
+      } catch (e) {
+        return;
+      }
 
       if (document.getElementById("id_participant")) document.getElementById("id_participant").value = state.reponses.id_participant || "";
-      document.getElementById("age").value = state.reponses.age || "";
-      document.getElementById("genre").value = state.reponses.genre || "";
-      document.getElementById("etudes").value = state.reponses.etudes || "";
-      document.getElementById("csp").value = state.reponses.csp || "";
+      if (document.getElementById("age")) document.getElementById("age").value = state.reponses.age || "";
+      if (document.getElementById("genre")) document.getElementById("genre").value = state.reponses.genre || "";
+      if (document.getElementById("etudes")) document.getElementById("etudes").value = state.reponses.etudes || "";
+      if (document.getElementById("csp")) document.getElementById("csp").value = state.reponses.csp || "";
 
-      if(state.reponses.tech_fam) {
+      if (state.reponses.tech_fam) {
         let rad = document.querySelector(`input[name="tech_fam"][value="${state.reponses.tech_fam}"]`);
-        if(rad) rad.checked = true;
+        if (rad) rad.checked = true;
       }
       questionsPHQ9.forEach((_, i) => {
         let val = state.reponses[`phq9_q${i+1}`];
-        if(val !== undefined && val !== "") { 
+        if (val !== undefined && val !== "") { 
           let rad = document.querySelector(`input[name="phq_${i}"][value="${val}"]`); 
           if(rad) rad.checked = true;
         }
       });
       questionsHexad.forEach(q => {
         let val = state.reponses[`hexad_${q.id}`];
-        if(val !== undefined && val !== "") { 
+        if (val !== undefined && val !== "") { 
           let rad = document.querySelector(`input[name="hexad_${q.id}"][value="${val}"]`); 
           if(rad) rad.checked = true;
         }
       });
-      if(state.reponses.game_freq) {
+      if (state.reponses.game_freq) {
         let rad = document.querySelector(`input[name="game_freq"][value="${state.reponses.game_freq}"]`);
-        if(rad) rad.checked = true;
+        if (rad) rad.checked = true;
       }
       if (document.getElementById("game_examples")) document.getElementById("game_examples").value = state.reponses.game_examples || "";
-      if(state.reponses.game_points) {
+      if (state.reponses.game_points) {
         let rad = document.querySelector(`input[name="game_points"][value="${state.reponses.game_points}"]`);
-        if(rad) rad.checked = true;
+        if (rad) rad.checked = true;
       }
 
+      // Routage intelligent vers la bonne page
+      AfficherPageActive();
+      
       if (state.page === 3) {
-        AfficherPageActive();
         chargerScenarioActuel();
-      } else if (state.page === "instructions") {
-        AfficherPageActive();
       } else if (state.page === 4) {
         genererSortieLocale();
-      } else {
-        AfficherPageActive();
       }
     }
 
     function genererSortieLocale() {
       state.page = 4;
+      sauvegarderEtat(); 
       AfficherPageActive();
 
       const colonnes = [
@@ -751,7 +762,7 @@
         return;
       }
       
-      // Méthode universelle de secours (Input invisible) hautement compatible mobile/desktop
+      // Technique ultra-robuste pour s'assurer que la copie fonctionne
       const el = document.createElement('textarea');
       el.value = ligneCSVGlobale;
       el.setAttribute('readonly', '');
@@ -759,13 +770,13 @@
       el.style.left = '-9999px';
       document.body.appendChild(el);
       el.select();
-      el.setSelectionRange(0, 99999); // Pour iOS
+      el.setSelectionRange(0, 99999); 
       
       try {
         document.execCommand('copy');
         alert("📋 Ligne CSV copiée avec succès dans le presse-papiers !");
       } catch (err) {
-        alert("Échec de la copie automatique. Veuillez utiliser le bouton de téléchargement.");
+        alert("Échec de la copie. L'appareil bloque l'accès au presse-papiers. Utilisez 'Télécharger le fichier CSV'.");
       }
       document.body.removeChild(el);
     }
@@ -779,10 +790,9 @@
       const pId = state.reponses.id_participant || "SXX";
       const nomFichier = `resultats_${pId}.csv`;
       
-      // Ajout du BOM UTF-8 (\uFEFF) pour assurer la bonne prise en charge des accents dans Excel
       const blob = new Blob(["\uFEFF" + ligneCSVGlobale], { type: "text/csv;charset=utf-8;" });
       
-      if (navigator.msSaveBlob) { // Compatibilité IE
+      if (navigator.msSaveBlob) { 
         navigator.msSaveBlob(blob, nomFichier);
       } else {
         const lien = document.createElement("a");
@@ -800,7 +810,7 @@
     }
 
     function reinitialiserTout() {
-      if(confirm("Attention, cela va effacer définitivement la session en cours pour une nouvelle passation.")) {
+      if(confirm("Attention, cela va effacer définitivement la session en cours pour préparer l'ordinateur à la prochaine passation.")) {
         localStorage.removeItem("exp_etcc_state");
         location.reload();
       }
