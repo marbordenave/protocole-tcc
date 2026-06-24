@@ -170,7 +170,7 @@
 
     <div id="page-1" class="page active">
       <h1>Profil & Humeur (1/2)</h1>
-      <p class="instruction">Ce premier questionnaire a pour objectif de recueillir quelques informations générales vous concernant, puis d’évaluer votre humeur actuelle.</p>
+      <p class="instruction">Vous allez répondre à une série de questions visant à recueillir des informations générales vous concernant, puis à évaluer votre humeur actuelle, vos préférences et vos habitudes de jeu. Ce questionnaire vous prendra entre 5 et 10 minutes. <br><br> Il n’y a ni bonne ni mauvaise réponse. Nous vous invitons à répondre de la manière la plus spontanée et la plus sincère possible, en fonction de ce qui vous correspond réellement. <br><br> Vos réponses seront traitées de manière strictement <strong>confidentielle</strong> strong> et <strong>pseudonymisées</strong> grâce à votre code de participant.</p>
       
       <div class="card">
         <h2>Informations générales</h2>
@@ -248,7 +248,7 @@
       </div>
 
       <div class="card">
-        <h2>Évaluation de votre humeur</h2>
+        <h2>Votre humeur</h2>
         <p class="instruction">Au cours des 2 dernières semaines, selon quelle fréquence avez-vous été gêné(e) par les problèmes suivants ?</p>
         <div id="phq9-container"></div>
       </div>
@@ -257,16 +257,15 @@
     </div>
 
     <div id="page-2" class="page">
-      <h1>Vos Préférences (2/2)</h1>
-      <p class="instruction">Pour chaque affirmation, veuillez évaluer à quel point elle vous décrit.</p>
       
       <div class="card">
-        <h2>Description personnelle</h2>
+        <h2>Vos Préférences</h2>
+         <p class="instruction">Pour chaque affirmation, veuillez évaluer à quel point elle vous décrit.</p>
         <div id="hexad-container"></div>
       </div>
 
       <div class="card">
-        <h2>Habitudes de jeu</h2>
+        <h2>Vos habitudes de jeu</h2>
         
         <div id="block_game_freq" class="question-block">
           <label class="form-label">À quelle fréquence jouez-vous à des jeux vidéo (sur smartphone, console, ordinateur) ? *</label>
@@ -311,7 +310,7 @@
       </div>
 
       <div class="card">
-        <h2>Intention d'utilisation & Utilité</h2>
+        <h2>Votre avis</h2>
         <p class="instruction">Veuillez évaluer votre accord avec les affirmations suivantes concernant cette interface :</p>
         <div id="tam-container"></div>
         <button type="button" onclick="validerScenarioActuel()">Valider mes choix pour ce scénario</button>
@@ -340,10 +339,10 @@
 
   <script>
     const listeScenarios = [
-      { id: "neutre", nom: "Le scénario neutre (vert)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=931-9406&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=931%3A9406&show-proto-sidebar=1" },
-      { id: "player", nom: "Le scénario “player” (violet)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=456-8237&t=4WTJTWnQY9sdySwt-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=456%3A8237&show-proto-sidebar=1" },
-      { id: "achiever", nom: "Le scénario “achiever” (bleu)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=705-5984&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=705%3A5984&show-proto-sidebar=1" },
-      { id: "philanthrope", nom: "Le scénario ”philanthrope” (orange)", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=726-14147&t=V4hZViiH6QjlVh7F-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=726%3A14147&show-proto-sidebar=1" }
+      { id: "neutre", nom: "Le scénario vert", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=931-9406&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=931%3A9406&show-proto-sidebar=1" },
+      { id: "player", nom: "Le scénario violet", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=456-8237&t=4WTJTWnQY9sdySwt-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=456%3A8237&show-proto-sidebar=1" },
+      { id: "achiever", nom: "Le scénario bleu", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=705-5984&t=TYNYepEvLA362ntd-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=705%3A5984&show-proto-sidebar=1" },
+      { id: "philanthrope", nom: "Le scénario orange", url: "https://www.figma.com/proto/X4Dm8ukqQhfKfMqybOmkQQ/Kanop%C3%A9e-Gamification?node-id=726-14147&t=V4hZViiH6QjlVh7F-1&scaling=min-zoom&content-scaling=fixed&page-id=11%3A627&starting-point-node-id=726%3A14147&show-proto-sidebar=1" }
     ];
 
     const questionsPHQ9 = [
