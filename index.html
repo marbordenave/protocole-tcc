@@ -67,7 +67,6 @@
       margin-bottom: 8px;
     }
 
-    /* --- NOUVEAU STYLE POUR LA GESTION DES ERREURS BLOCS --- */
     .question-block {
       padding: 10px;
       border-radius: 8px;
@@ -410,7 +409,7 @@
     const questionsTAM = [
       { id: "recommande", txt: "Je recommanderais l’usage de cette application à d’autres utilisateurs." },
       { id: "efficace", txt: "Cette application m’aiderait à accomplir mes tâches plus efficacement." },
-      { id: "perf", txt: "L’utilisation de cette application améliorerait ma performance dans cette activité." },
+      { id: "perf", txt: "L’utilisation de cette application améliorerait ma performance dans cette activity." },
       { id: "claire", txt: "L’interaction avec cette application serait claire et compréhensible." },
       { id: "facile", txt: "Globalement, cette application serait facile à utiliser." },
       { id: "regulier", txt: "Si j’en ai la possibilité, j’utiliserai cette application régulièrement." },
@@ -470,7 +469,7 @@
           <label class="form-label">${q.txt}</label>
           <div class="radio-group">
             ${likertLabels.map((lbl, v) => `
-              <label class="radio-option"><input type="radio" name="tam_${q.id}" value="${v+1}" onchange="gererErreur('block_tam_${q.id}', false)"> ${lbl}</label>
+              <label class="radio-option"><input type="radio" name="tam_${q.id}" value="${v+1}" onchange="sauvegarderEtat(); gererErreur('block_tam_${q.id}', false)"> ${lbl}</label>
             `).join('')}
           </div>
           <div class="error-text">⚠️ Veuillez évaluer cette affirmation d'utilité.</div>
@@ -516,7 +515,8 @@
 
     function AfficherPageActive() {
       document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-      document.getElementById(`page-${state.page}`).classList.add("active");
+      const targetPage = document.getElementById(`page-${state.page}`);
+      if (targetPage) targetPage.classList.add("active");
       window.scrollTo(0, 0);
     }
 
@@ -554,14 +554,12 @@
         state.ordre = scens;
       }
       
-      // On redirige d'abord vers l'écran intermédiaire de consignes
       state.page = "instructions";
       sauvegarderEtat();
       AfficherPageActive();
     }
 
     function passerAuxScenarios() {
-      // Cette fonction lance le protocole de notation après lecture des consignes
       state.page = 3;
       sauvegarderEtat();
       AfficherPageActive();
@@ -578,8 +576,16 @@
       document.getElementById("scenario-title").innerText = scen.nom;
       document.getElementById("link-figma").href = scen.url;
 
+      // Restauration intelligente en cas de rechargement/retour de l'onglet Figma
       questionsTAM.forEach(q => {
-        document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => r.checked = false);
+        let savedVal = state.reponses[`scen_${scen.id}_${q.id}`];
+        document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => {
+          if (savedVal && r.value === savedVal) {
+            r.checked = true;
+          } else {
+            r.checked = false;
+          }
+        });
         gererErreur(`block_tam_${q.id}`, false);
       });
       window.scrollTo(0, 0);
@@ -600,14 +606,10 @@
       }
 
       const scen = state.ordre[state.indexScenario];
-      let resTemp = {};
 
       for (let q of questionsTAM) {
         let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
         verifierEtMarquer(!r, `block_tam_${q.id}`);
-        if (r) {
-          resTemp[`scen_${scen.id}_${q.id}`] = r.value;
-        }
       }
       
       if (!sansErreur) {
@@ -615,7 +617,6 @@
         return;
       }
 
-      Object.assign(state.reponses, resTemp);
       state.indexScenario++;
       sauvegarderEtat();
 
@@ -627,11 +628,11 @@
     }
 
     function sauvegarderEtat() {
-      state.reponses.id_participant = document.getElementById("id_participant").value;
-      state.reponses.age = document.getElementById("age").value;
-      state.reponses.genre = document.getElementById("genre").value;
-      state.reponses.etudes = document.getElementById("etudes").value;
-      state.reponses.csp = document.getElementById("csp").value;
+      if (document.getElementById("id_participant")) state.reponses.id_participant = document.getElementById("id_participant").value;
+      if (document.getElementById("age")) state.reponses.age = document.getElementById("age").value;
+      if (document.getElementById("genre")) state.reponses.genre = document.getElementById("genre").value;
+      if (document.getElementById("etudes")) state.reponses.etudes = document.getElementById("etudes").value;
+      if (document.getElementById("csp")) state.reponses.csp = document.getElementById("csp").value;
       
       let tf = document.querySelector(`input[name="tech_fam"]:checked`);
       state.reponses.tech_fam = tf ? tf.value : "";
@@ -648,12 +649,23 @@
 
       let gf = document.querySelector(`input[name="game_freq"]:checked`);
       state.reponses.game_freq = gf ? gf.value : "";
-      state.reponses.game_examples = document.getElementById("game_examples").value;
+      if (document.getElementById("game_examples")) state.reponses.game_examples = document.getElementById("game_examples").value;
       let gp = document.querySelector(`input[name="game_points"]:checked`);
       state.reponses.game_points = gp ? gp.value : "";
 
       if(state.ordre && state.ordre.length > 0) {
         state.reponses.ordre_presentation = state.ordre.map(s => s.id).join('-');
+        
+        // Sauvegarde temps réel de l'avis TAM si on est sur la page d'évaluation
+        if (state.page === 3 && state.ordre[state.indexScenario]) {
+          const scen = state.ordre[state.indexScenario];
+          questionsTAM.forEach(q => {
+            let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
+            if (r) {
+              state.reponses[`scen_${scen.id}_${q.id}`] = r.value;
+            }
+          });
+        }
       }
 
       localStorage.setItem("exp_etcc_state", JSON.stringify(state));
@@ -662,55 +674,57 @@
     function chargerEtatSauvegarde() {
       let sav = localStorage.getItem("exp_etcc_state");
       if (!sav) return;
-      let parsed = JSON.parse(sav);
       
-      if (parsed.indexScenario > 3 || !parsed.ordre || parsed.ordre.length === 0) {
-        localStorage.removeItem("exp_etcc_state");
-        return;
-      }
-      
-      state = parsed;
+      state = JSON.parse(sav);
 
-      document.getElementById("id_participant").value = state.reponses.id_participant || "";
-      document.getElementById("age").value = state.reponses.age || "";
-      document.getElementById("genre").value = state.reponses.genre || "";
-      document.getElementById("etudes").value = state.reponses.etudes || "";
-      document.getElementById("csp").value = state.reponses.csp || "";
+      // Restauration des champs textuels et selects
+      if (document.getElementById("id_participant")) document.getElementById("id_participant").value = state.reponses.id_participant || "";
+      if (document.getElementById("age")) document.getElementById("age").value = state.reponses.age || "";
+      if (document.getElementById("genre")) document.getElementById("genre").value = state.reponses.genre || "";
+      if (document.getElementById("etudes")) document.getElementById("etudes").value = state.reponses.etudes || "";
+      if (document.getElementById("csp")) document.getElementById("csp").value = state.reponses.csp || "";
 
+      // Restauration des radios pages 1 et 2
       if(state.reponses.tech_fam) {
         let rad = document.querySelector(`input[name="tech_fam"][value="${state.reponses.tech_fam}"]`);
         if(rad) rad.checked = true;
       }
       questionsPHQ9.forEach((_, i) => {
         let val = state.reponses[`phq9_q${i+1}`];
-        if(val) { let rad = document.querySelector(`input[name="phq_${i}"][value="${val}"]`); if(rad) rad.checked = true; }
+        if(val !== undefined && val !== "") { 
+          let rad = document.querySelector(`input[name="phq_${i}"][value="${val}"]`); 
+          if(rad) rad.checked = true; 
+        }
       });
       questionsHexad.forEach(q => {
         let val = state.reponses[`hexad_${q.id}`];
-        if(val) { let rad = document.querySelector(`input[name="hexad_${q.id}"][value="${val}"]`); if(rad) rad.checked = true; }
+        if(val !== undefined && val !== "") { 
+          let rad = document.querySelector(`input[name="hexad_${q.id}"][value="${val}"]`); 
+          if(rad) rad.checked = true; 
+        }
       });
       if(state.reponses.game_freq) {
         let rad = document.querySelector(`input[name="game_freq"][value="${state.reponses.game_freq}"]`);
         if(rad) rad.checked = true;
       }
-      document.getElementById("game_examples").value = state.reponses.game_examples || "";
+      if (document.getElementById("game_examples")) document.getElementById("game_examples").value = state.reponses.game_examples || "";
       if(state.reponses.game_points) {
         let rad = document.querySelector(`input[name="game_points"][value="${state.reponses.game_points}"]`);
         if(rad) rad.checked = true;
       }
 
+      AfficherPageActive();
+
       if (state.page === 3) {
-        AfficherPageActive();
         chargerScenarioActuel();
       } else if (state.page === 4) {
         genererSortieLocale();
-      } else {
-        AfficherPageActive();
       }
     }
 
     function genererSortieLocale() {
       state.page = 4;
+      sauvegarderEtat(); // On enregistre immédiatement l'état figé de la page 4
       AfficherPageActive();
 
       const colonnes = [
@@ -758,7 +772,6 @@
       }
     }
 
-    // Initialisation au chargement de la page
     window.onload = function() {
       initBuilders();
       chargerEtatSauvegarde();
