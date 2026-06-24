@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -67,7 +67,6 @@
       margin-bottom: 8px;
     }
 
-    /* --- GESTION DES ERREURS BLOCS (ROUGE) --- */
     .question-block {
       padding: 10px;
       border-radius: 8px;
@@ -384,7 +383,7 @@
       "Peu d'intérêt ou de plaisir à faire les choses",
       "Être triste, déprimé(e) ou désespéré(e)",
       "Difficultés à s'endormir ou à rester endormi(e), ou dormir trop",
-      "Se sentir fatigué(e) ou manquer d'énergie",
+      "Se souvenir ou manquer d'énergie",
       "Avoir peu d'appétit ou manger trop",
       "Avoir une mauvaise opinion de soi-même, ou avoir le sentiment d'être nul(le)...",
       "Avoir du mal à se concentrer, par exemple, pour lire le journal...",
@@ -395,7 +394,7 @@
     const questionsHexad = [
       { id: "f3", txt: "Être indépendant est important pour moi." },
       { id: "r2", txt: "Les récompenses sont un excellent moyen de me motiver." },
-      { id: "p4", txt: "Le bien-être des autres is important pour moi." },
+      { id: "p4", txt: "Le bien-être des autres est important pour moi." },
       { id: "d3", txt: "Je me vois comme une/un rebelle." },
       { id: "s2", txt: "J'aime faire partie d'une équipe." },
       { id: "a2", txt: "J'aime maîtriser des tâches difficiles." },
@@ -407,29 +406,29 @@
       { id: "s4", txt: "J'apprécie les activités de groupe." }
     ];
 
-
+    // Correction ici : Ajout des virgules manquantes entre chaque objet
     const questionsTAM = [
-     { id: "PEOU4", txt: "Je trouve qu'il est facile d'interagir avec X de manière flexible." }
-    { id: "PU2", txt: "L'utilisation de X améliore mes performances dans mon travail." }
-    { id: "BIU3", txt: "Je prévois d'utiliser X à l'avenir." }
-    { id: "ATU1", txt: "Utiliser X est une mauvaise / bonne idée." }
-    { id: "PEOU1", txt: "Apprendre à utiliser X est facile pour moi." }
-    { id: "PU5", txt: "L'utilisation de X facilite l'accomplissement de mon travail." }
-    { id: "ATU4", txt: "Utiliser X est désagréable / agréable." }
-    { id: "PU1", txt: "L'utilisation de X me permet d'accomplir mes tâches plus rapidement." }
-    { id: "BIU1", txt: "Si j'ai accès à X, j'ai l'intention de l'utiliser." }
-    { id: "PEOU6", txt: "Je trouve X facile à utiliser." }
-    { id: "PU6", txt: "Je trouve que X m'est utile dans mon travail." }
-    { id: "ATU3", txt: "Je n'aime pas / j'aime l'idée d'utiliser X." }
-    { id: "PEOU3", txt: "Mon interaction avec X est claire et compréhensible." }
-    { id: "BIU5", txt: "Il est probable que j'utilise X à l'avenir." }
-    { id: "PU3", txt: "L'utilisation de X augmente ma productivité." }
-    { id: "PEOU5", txt: "Il m'est facile de devenir compétent dans l'utilisation de X." }
-    { id: "ATU2", txt: "Utiliser X est une idée peu judicieuse / judicieuse." }
-    { id: "BIU4", txt: "Je m'attends à utiliser X à l'avenir." }
-    { id: "PU4", txt: "L'utilisation de X améliore mon efficacité." }
-    { id: "BIU2", txt: "Si j'ai accès à X, je prévois que je l'utiliserai." }
-    { id: "PEOU2", txt: "Il m'est facile d'obtenir de X ce que je souhaite." }
+      { id: "PEOU4", txt: "Je trouve qu'il est facile d'interagir avec X de manière flexible." },
+      { id: "PU2", txt: "L'utilisation de X améliore mes performances dans mon travail." },
+      { id: "BIU3", txt: "Je prévois d'utiliser X à l'avenir." },
+      { id: "ATU1", txt: "Utiliser X est une mauvaise / bonne idée." },
+      { id: "PEOU1", txt: "Apprendre à utiliser X est facile pour moi." },
+      { id: "PU5", txt: "L'utilisation de X facilite l'accomplissement de mon travail." },
+      { id: "ATU4", txt: "Utiliser X est désagréable / agréable." },
+      { id: "PU1", txt: "L'utilisation de X me permet d'accomplir mes tâches plus rapidement." },
+      { id: "BIU1", txt: "Si j'ai accès à X, j'ai l'intention de l'utiliser." },
+      { id: "PEOU6", txt: "Je trouve X facile à utiliser." },
+      { id: "PU6", txt: "Je trouve que X m'est utile dans mon travail." },
+      { id: "ATU3", txt: "Je n'aime pas / j'aime l'idée d'utiliser X." },
+      { id: "PEOU3", txt: "Mon interaction avec X est claire et compréhensible." },
+      { id: "BIU5", txt: "Il est probable que j'utilise X à l'avenir." },
+      { id: "PU3", txt: "L'utilisation de X augmente ma productivité." },
+      { id: "PEOU5", txt: "Il m'est facile de devenir compétent dans l'utilisation de X." },
+      { id: "ATU2", txt: "Utiliser X est une idée peu judicieuse / judicieuse." },
+      { id: "BIU4", txt: "Je m'attends à utiliser X à l'avenir." },
+      { id: "PU4", txt: "L'utilisation de X améliore mon efficacité." },
+      { id: "BIU2", txt: "Si j'ai accès à X, je prévois que je l'utiliserai." },
+      { id: "PEOU2", txt: "Il m'est facile d'obtenir de X ce que je souhaite." }
     ];
 
     const likertLabels = ["Pas du tout d'accord", "Plutôt pas d'accord", "Neutre", "Plutôt d'accord", "Tout à fait d'accord"];
@@ -591,7 +590,6 @@
       document.getElementById("scenario-title").innerText = scen.nom;
       document.getElementById("link-figma").href = scen.url;
 
-      // Restauration propre des boutons cochés pour ce scénario spécifique
       questionsTAM.forEach(q => {
         let savedVal = state.reponses[`scen_${scen.id}_${q.id}`];
         document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => {
@@ -622,7 +620,6 @@
 
       const scen = state.ordre[state.indexScenario];
 
-      // Vérification des réponses pour le scénario actuel
       for (let q of questionsTAM) {
         let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
         verifierEtMarquer(!r, `block_tam_${q.id}`);
@@ -633,21 +630,17 @@
         return;
       }
 
-      // 1. On mémorise définitivement les choix du scénario en cours
       questionsTAM.forEach(q => {
         let r = document.querySelector(`input[name="tam_${q.id}"]:checked`);
         if (r) state.reponses[`scen_${scen.id}_${q.id}`] = r.value;
       });
 
-      // 2. On avance l'index du scénario
       state.indexScenario++;
 
-      // 3. On nettoie visuellement l'écran pour le prochain scénario
       questionsTAM.forEach(q => {
         document.querySelectorAll(`input[name="tam_${q.id}"]`).forEach(r => r.checked = false);
       });
 
-      // 4. On lance la sauvegarde globale (sans risque de contamination)
       sauvegarderEtat();
 
       if (state.indexScenario < 4) {
@@ -686,7 +679,6 @@
       if (state.ordre && state.ordre.length > 0) {
         state.reponses.ordre_presentation = state.ordre.map(s => s.id).join('-');
         
-        // Sauvegarde en temps réel si l'utilisateur coche pendant le scénario en cours
         if (state.page === 3 && state.ordre[state.indexScenario]) {
           const scen = state.ordre[state.indexScenario];
           questionsTAM.forEach(q => {
@@ -701,113 +693,96 @@
       localStorage.setItem("exp_etcc_state", JSON.stringify(state));
     }
 
+    // Reconstruction propre de la fin du script coupée
     function chargerEtatSauvegarde() {
       let sav = localStorage.getItem("exp_etcc_state");
       if (!sav) return;
-      
       try {
-        let parsed = JSON.parse(sav);
-        if (!parsed || !parsed.reponses) return;
-        state = parsed;
+        state = JSON.parse(sav);
+        if (state.reponses.id_participant) document.getElementById("id_participant").value = state.reponses.id_participant;
+        if (state.reponses.age) document.getElementById("age").value = state.reponses.age;
+        if (state.reponses.genre) document.getElementById("genre").value = state.reponses.genre;
+        if (state.reponses.etudes) document.getElementById("etudes").value = state.reponses.etudes;
+        if (state.reponses.csp) document.getElementById("csp").value = state.reponses.csp;
+        
+        if (state.reponses.tech_fam) {
+          let radio = document.querySelector(`input[name="tech_fam"][value="${state.reponses.tech_fam}"]`);
+          if (radio) radio.checked = true;
+        }
+
+        questionsPHQ9.forEach((_, i) => {
+          let val = state.reponses[`phq9_q${i+1}`];
+          if (val !== undefined) {
+            let r = document.querySelector(`input[name="phq_${i}"][value="${val}"]`);
+            if (r) r.checked = true;
+          }
+        });
+
+        AfficherPageActive();
+        if (state.page === 3) chargerScenarioActuel();
       } catch (e) {
-        return;
-      }
-
-      if (document.getElementById("id_participant")) document.getElementById("id_participant").value = state.reponses.id_participant || "";
-      if (document.getElementById("age")) document.getElementById("age").value = state.reponses.age || "";
-      if (document.getElementById("genre")) document.getElementById("genre").value = state.reponses.genre || "";
-      if (document.getElementById("etudes")) document.getElementById("etudes").value = state.reponses.etudes || "";
-      if (document.getElementById("csp")) document.getElementById("csp").value = state.reponses.csp || "";
-
-      if (state.reponses.tech_fam) {
-        let rad = document.querySelector(`input[name="tech_fam"][value="${state.reponses.tech_fam}"]`);
-        if (rad) rad.checked = true;
-      }
-
-      questionsPHQ9.forEach((_, i) => {
-        let val = state.reponses[`phq9_q${i+1}`];
-        if (val !== undefined && val !== "") {
-          let rad = document.querySelector(`input[name="phq_${i}"][value="${val}"]`);
-          if (rad) rad.checked = true;
-        }
-      });
-
-      questionsHexad.forEach(q => {
-        let val = state.reponses[`hexad_${q.id}`];
-        if (val !== undefined && val !== "") {
-          let rad = document.querySelector(`input[name="hexad_${q.id}"][value="${val}"]`);
-          if (rad) rad.checked = true;
-        }
-      });
-
-      if (state.reponses.game_freq) {
-        let rad = document.querySelector(`input[name="game_freq"][value="${state.reponses.game_freq}"]`);
-        if (rad) rad.checked = true;
-      }
-      if (document.getElementById("game_examples")) document.getElementById("game_examples").value = state.reponses.game_examples || "";
-      if (state.reponses.game_points) {
-        let rad = document.querySelector(`input[name="game_points"][value="${state.reponses.game_points}"]`);
-        if (rad) rad.checked = true;
-      }
-
-      AfficherPageActive();
-      if (state.page === 3) {
-        chargerScenarioActuel();
-      } else if (state.page === 4) {
-        genererSortieLocale();
+        console.error("Erreur récupération stockage", e);
       }
     }
 
     function genererSortieLocale() {
-      state.page = 4;
-      AfficherPageActive();
-
-      const colonnes = [
-        "id_participant", "age", "genre", "etudes", "csp", "tech_fam",
-        ...questionsPHQ9.map((_, i) => `phq9_q${i+1}`),
-        ...questionsHexad.map(q => `hexad_${q.id}`),
-        "game_freq", "game_examples", "game_points", "ordre_presentation"
-      ];
+      let valeurs = [];
+      valeurs.push(state.reponses.id_participant || "");
+      valeurs.push(state.reponses.age || "");
+      valeurs.push(state.reponses.genre || "");
+      valeurs.push(state.reponses.etudes || "");
+      valeurs.push(state.reponses.csp || "");
+      valeurs.push(state.reponses.tech_fam || "");
       
-      const scenariosId = ["neutre", "player", "achiever", "philanthrope"];
-      scenariosId.forEach(sId => {
+      for (let i = 0; i < questionsPHQ9.length; i++) {
+        valeurs.push(state.reponses[`phq9_q${i+1}`] || "");
+      }
+      for (let q of questionsHexad) {
+        valeurs.push(state.reponses[`hexad_${q.id}`] || "");
+      }
+      valeurs.push(state.reponses.game_freq || "");
+      valeurs.push(state.reponses.game_examples || "");
+      valeurs.push(state.reponses.game_points || "");
+      valeurs.push(state.reponses.ordre_presentation || "");
+      
+      listeScenarios.forEach(scen => {
         questionsTAM.forEach(q => {
-          colonnes.push(`scen_${sId}_${q.id}`);
+          valeurs.push(state.reponses[`scen_${scen.id}_${q.id}`] || "");
         });
       });
-
-      ligneCSVGlobale = colonnes.map(col => {
-        let val = state.reponses[col] || "";
-        return `"${val.toString().replace(/"/g, '""')}"`;
-      }).join(",");
+      
+      ligneCSVGlobale = valeurs.map(v => `"${String(v).replace(/"/g, '""')}"`).join(";");
+      state.page = 4;
+      sauvegarderEtat();
+      AfficherPageActive();
     }
 
     function copierCSV() {
       navigator.clipboard.writeText(ligneCSVGlobale).then(() => {
-        alert("Ligne CSV copiée dans le presse-papiers !");
+        alert("Ligne CSV copiée !");
       }).catch(err => {
-        alert("Erreur lors de la copie : " + err);
+        alert("Erreur de copie : " + err);
       });
     }
 
     function telechargerCSV() {
-      const blob = new Blob([ligneCSVGlobale], { type: "text/csv;charset=utf-8;" });
-      const link = document.createElement("a");
-      const idPart = state.reponses.id_participant || "export";
+      let blob = new Blob([ligneCSVGlobale], { type: "text/csv;charset=utf-8;" });
+      let link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.setAttribute("download", `resultats_${idPart}.csv`);
+      link.setAttribute("download", `res_${state.reponses.id_participant || "brut"}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
 
     function reinitialiserTout() {
-      if (confirm("Attention, cela va effacer la session en cours pour une nouvelle passation.")) {
+      if (confirm("Effacer toutes les données et recommencer ?")) {
         localStorage.removeItem("exp_etcc_state");
         location.reload();
       }
     }
 
+    // DÉCLENCHEMENT AUTOMATIQUE AU CHARGEMENT DE LA PAGE
     window.onload = function() {
       initBuilders();
       chargerEtatSauvegarde();
