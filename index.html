@@ -345,7 +345,7 @@
 
       <div class="card">
         <h2>Votre avis</h2>
-        <p class="instruction">Veuillez évaluer votre accord avec les affirmations suivantes concernant cette interface :</p>
+      <p class="instruction"> Veuillez évaluer votre degré d'accord avec les affirmations suivantes concernant cette interface, en partant du principe que vous y avez accès et que vous pouvez l'utiliser librement.</p>
         <div id="tam-container"></div>
         <button type="button" onclick="validerScenarioActuel()">Valider mes choix pour ce scénario</button>
       </div>
@@ -380,15 +380,10 @@
     ];
 
     const questionsPHQ9 = [
-      "Peu d'intérêt ou de plaisir à faire les choses",
-      "Être triste, déprimé(e) ou désespéré(e)",
-      "Difficultés à s'endormir ou à rester endormi(e), ou dormir trop",
-      "Se souvenir ou manquer d'énergie",
-      "Avoir peu d'appétit ou manger trop",
-      "Avoir une mauvaise opinion de soi-même, ou avoir le sentiment d'être nul(le)...",
-      "Avoir du mal à se concentrer, par exemple, pour lire le journal...",
-      "Bouger ou parler si lentement que les autres auraient pu le remarquer...",
-      "Penser qu'il vaulter mieux mourir ou envisager de vous faire du mal..."
+       "Sentiment de nervosité, d'anxiété ou de tension",
+      "Incapable d'arrêter de vous inquiéter ou de contrôler vos inquiétudes", 
+      "Peu d'intérêt ou de plaisir à faire les choses", 
+      "Sentiment de tristesse, de déprime ou de désespoir"
     ];
 
     const questionsHexad = [
@@ -407,27 +402,10 @@
     ];
 
     const questionsTAM = [
-      { id: "PEOU4", txt: "Je trouve qu'il est facile d'interagir avec X de manière flexible." },
-      { id: "PU2", txt: "L'utilisation de X améliore mes performances dans mon travail." },
-      { id: "BIU3", txt: "Je prévois d'utiliser X à l'avenir." },
-      { id: "ATU1", txt: "Utiliser X est une mauvaise / bonne idée." },
-      { id: "PEOU1", txt: "Apprendre à utiliser X est facile pour moi." },
-      { id: "PU5", txt: "L'utilisation de X facilite l'accomplissement de mon travail." },
-      { id: "ATU4", txt: "Utiliser X est désagréable / agréable." },
-      { id: "PU1", txt: "L'utilisation de X me permet d'accomplir mes tâches plus rapidement." },
-      { id: "BIU1", txt: "Si j'ai accès à X, j'ai l'intention de l'utiliser." },
-      { id: "PEOU6", txt: "Je trouve X facile à utiliser." },
-      { id: "PU6", txt: "Je trouve que X m'est utile dans mon travail." },
-      { id: "ATU3", txt: "Je n'aime pas / j'aime l'idée d'utiliser X." },
-      { id: "PEOU3", txt: "Mon interaction avec X est claire et compréhensible." },
-      { id: "BIU5", txt: "Il est probable que j'utilise X à l'avenir." },
-      { id: "PU3", txt: "L'utilisation de X augmente ma productivité." },
-      { id: "PEOU5", txt: "Il m'est facile de devenir compétent dans l'utilisation de X." },
-      { id: "ATU2", txt: "Utiliser X est une idée peu judicieuse / judicieuse." },
-      { id: "BIU4", txt: "Je m'attends à utiliser X à l'avenir." },
-      { id: "PU4", txt: "L'utilisation de X améliore mon efficacité." },
-      { id: "BIU2", txt: "Si j'ai accès à X, je prévois que je l'utiliserai." },
-      { id: "PEOU2", txt: "Il m'est facile d'obtenir de X ce que je souhaite." }
+    { id: "PEOU", txt: "Mon interaction avec l'application est claire et compréhensible.." },
+     { id: "BIU1", txt: "J'ai l'intention d'utiliser l'application à l'avenir." },
+    { id: "BIU2", txt: "Je prévois d'utiliser l'application à l'avenir." },
+    { id: "BIU3", txt: "Il est probable que j'utilise l'application à l'avenir." },
     ];
 
     const likertLabels = ["Pas du tout d'accord", "Plutôt pas d'accord", "Neutre", "Plutôt d'accord", "Tout à fait d'accord"];
